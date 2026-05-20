@@ -707,6 +707,121 @@ fill='%238b5cf6'/>
 @media (max-width: 700px) {
   .hero-title-anim { font-size: 32px; }
 }
+    .hero-video-wrap {
+  background: #08080b;
+}
+
+.hero-particles {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* Floating orbs — pure CSS, zero JS */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(60px);
+  opacity: 0;
+  animation: orbFloat linear infinite;
+}
+
+.orb-1 {
+  width: 320px; height: 320px;
+  background: #8b5cf6;
+  top: -80px; left: -60px;
+  animation-duration: 18s;
+  animation-delay: 0s;
+}
+.orb-2 {
+  width: 260px; height: 260px;
+  background: #60a5fa;
+  top: 20px; right: -40px;
+  animation-duration: 22s;
+  animation-delay: -6s;
+}
+.orb-3 {
+  width: 200px; height: 200px;
+  background: #a78bfa;
+  bottom: 20px; left: 30%;
+  animation-duration: 16s;
+  animation-delay: -10s;
+}
+.orb-4 {
+  width: 180px; height: 180px;
+  background: #3b82f6;
+  bottom: -40px; right: 20%;
+  animation-duration: 20s;
+  animation-delay: -3s;
+}
+.orb-5 {
+  width: 140px; height: 140px;
+  background: #c4b5fd;
+  top: 40%; left: 55%;
+  animation-duration: 14s;
+  animation-delay: -8s;
+}
+
+@keyframes orbFloat {
+  0%   { opacity: 0;    transform: translateY(0px)   scale(1); }
+  10%  { opacity: 0.18; }
+  50%  { opacity: 0.22; transform: translateY(-30px) scale(1.08); }
+  90%  { opacity: 0.18; }
+  100% { opacity: 0;    transform: translateY(0px)   scale(1); }
+}
+
+/* Subtle grid lines overlay */
+.hero-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(139,92,246,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(139,92,246,0.04) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+
+/* Scanline shimmer */
+.hero-grid::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    rgba(139,92,246,0.03) 50%,
+    transparent 100%
+  );
+  animation: scanline 6s ease-in-out infinite;
+}
+
+@keyframes scanline {
+  0%, 100% { transform: translateY(-100%); opacity: 0; }
+  20%       { opacity: 1; }
+  80%       { opacity: 1; }
+  100%      { transform: translateY(100%); opacity: 0; }
+}
+
+/* Star / particle dots */
+.hero-stars {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.star {
+  position: absolute;
+  width: 2px; height: 2px;
+  background: white;
+  border-radius: 50%;
+  animation: starPulse ease-in-out infinite;
+}
+
+@keyframes starPulse {
+  0%, 100% { opacity: 0; transform: scale(0.5); }
+  50%       { opacity: 0.6; transform: scale(1); }
+}
   </style>
 </head>
 
@@ -790,13 +905,16 @@ ReeseWave is still in active development. Some features are incomplete or evolvi
 
   <!-- VIDEO BACKGROUND -->
   <div class="hero-video-wrap">
-    <video autoplay muted loop playsinline class="hero-video">
-      <!-- You can replace this with any music-related cinematic video -->
-      <source src="images/Video.mp4" type="video/mp4">
-    </video>
+    <div class="hero-particles">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="orb orb-4"></div>
+    <div class="orb orb-5"></div>
+  </div>
+  <div class="hero-grid"></div>
+  <div class="hero-stars" id="hero-stars"></div>
 
-    <!-- DARK OVERLAY -->
-    <div class="hero-overlay"></div>
   <canvas id="hero-canvas"></canvas>
   <div class="hero-overlay"></div>
 
@@ -1350,6 +1468,26 @@ function formatPlays(n) {
   if (n >= 1000)    return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K plays';
   return n + ' plays';
 }
+  // ── Hero stars ─────────────────────────────────────────────────────
+(function () {
+  const container = document.getElementById('hero-stars');
+  if (!container) return;
+  const count = 55;
+  for (let i = 0; i < count; i++) {
+    const s = document.createElement('div');
+    s.className = 'star';
+    s.style.cssText = `
+      left:              ${Math.random() * 100}%;
+      top:               ${Math.random() * 100}%;
+      animation-duration: ${2.5 + Math.random() * 4}s;
+      animation-delay:   -${Math.random() * 6}s;
+      width:             ${Math.random() > 0.7 ? '3px' : '2px'};
+      height:            ${Math.random() > 0.7 ? '3px' : '2px'};
+      opacity:           ${0.2 + Math.random() * 0.5};
+    `;
+    container.appendChild(s);
+  }
+})();
 </script>
 </body>
 </html>
