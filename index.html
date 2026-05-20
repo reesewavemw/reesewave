@@ -727,52 +727,52 @@ fill='%238b5cf6'/>
 .orb {
   position: absolute;
   border-radius: 50%;
-  filter: blur(60px);
+  filter: blur(40px);
   opacity: 0;
-  animation: orbFloat linear infinite;
+  animation: orbFloat ease-in-out infinite;
 }
 
 .orb-1 {
-  width: 320px; height: 320px;
-  background: #8b5cf6;
-  top: -80px; left: -60px;
-  animation-duration: 18s;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, #8b5cf6, #6d28d9);
+  top: -100px; left: -80px;
+  animation-duration: 12s;
   animation-delay: 0s;
 }
 .orb-2 {
-  width: 260px; height: 260px;
-  background: #60a5fa;
-  top: 20px; right: -40px;
-  animation-duration: 22s;
-  animation-delay: -6s;
+  width: 340px; height: 340px;
+  background: radial-gradient(circle, #60a5fa, #2563eb);
+  top: -20px; right: -60px;
+  animation-duration: 15s;
+  animation-delay: -4s;
 }
 .orb-3 {
-  width: 200px; height: 200px;
-  background: #a78bfa;
-  bottom: 20px; left: 30%;
-  animation-duration: 16s;
-  animation-delay: -10s;
+  width: 280px; height: 280px;
+  background: radial-gradient(circle, #a78bfa, #7c3aed);
+  bottom: 0px; left: 25%;
+  animation-duration: 10s;
+  animation-delay: -7s;
 }
 .orb-4 {
-  width: 180px; height: 180px;
-  background: #3b82f6;
-  bottom: -40px; right: 20%;
-  animation-duration: 20s;
-  animation-delay: -3s;
+  width: 260px; height: 260px;
+  background: radial-gradient(circle, #3b82f6, #1d4ed8);
+  bottom: -30px; right: 15%;
+  animation-duration: 14s;
+  animation-delay: -2s;
 }
 .orb-5 {
-  width: 140px; height: 140px;
-  background: #c4b5fd;
-  top: 40%; left: 55%;
-  animation-duration: 14s;
-  animation-delay: -8s;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, #c4b5fd, #8b5cf6);
+  top: 35%; left: 50%;
+  animation-duration: 9s;
+  animation-delay: -5s;
 }
 
 @keyframes orbFloat {
   0%   { opacity: 0;    transform: translateY(0px)   scale(1); }
-  10%  { opacity: 0.18; }
-  50%  { opacity: 0.22; transform: translateY(-30px) scale(1.08); }
-  90%  { opacity: 0.18; }
+  15%  { opacity: 0.55; }
+  50%  { opacity: 0.65; transform: translateY(-40px) scale(1.12); }
+  85%  { opacity: 0.55; }
   100% { opacity: 0;    transform: translateY(0px)   scale(1); }
 }
 
@@ -1354,20 +1354,20 @@ document.addEventListener('DOMContentLoaded', init);
   function drawIdle() {
     ctx.clearRect(0, 0, W, H);
     const layers = [
-      { amp: 32, freq: 0.011, speed: 0.018, alpha: 0.18, color: '#8b5cf6' },
-      { amp: 20, freq: 0.018, speed: 0.026, alpha: 0.13, color: '#a78bfa' },
-      { amp: 44, freq: 0.007, speed: 0.010, alpha: 0.10, color: '#60a5fa' },
-      { amp: 14, freq: 0.026, speed: 0.034, alpha: 0.07, color: '#8b5cf6' },
-    ];
+  { amp: 55, freq: 0.011, speed: 0.018, alpha: 0.55, color: '#8b5cf6' },
+  { amp: 35, freq: 0.018, speed: 0.026, alpha: 0.40, color: '#a78bfa' },
+  { amp: 70, freq: 0.007, speed: 0.010, alpha: 0.30, color: '#60a5fa' },
+  { amp: 25, freq: 0.026, speed: 0.034, alpha: 0.22, color: '#8b5cf6' },
+];
     layers.forEach(l => {
-      ctx.beginPath();
-      const yBase = H * 0.64;
-      for (let x = 0; x <= W; x += 2) {
-        const y = yBase
-          + Math.sin(x * l.freq + t * l.speed * 60) * l.amp
-          + Math.sin(x * l.freq * 0.5 + t * l.speed * 38) * (l.amp * 0.4);
-        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-      }
+  ctx.beginPath();
+  const yBase = H * 0.55;
+  for (let x = 0; x <= W; x += 2) {
+    const y = yBase
+      + Math.sin(x * l.freq + t * l.speed * 60) * l.amp
+      + Math.sin(x * l.freq * 0.5 + t * l.speed * 38) * (l.amp * 0.4);
+    x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  }
       ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath();
       ctx.fillStyle = l.color;
       ctx.globalAlpha = l.alpha;
@@ -1377,7 +1377,7 @@ document.addEventListener('DOMContentLoaded', init);
     // Glowing dots along the top wave
     for (let i = 0; i < 7; i++) {
       const px = (W / 8) * (i + 1);
-      const py = H * 0.64 + Math.sin(px * 0.011 + t * 0.018 * 60) * 32;
+      const py = H * 0.55 + Math.sin(px * 0.011 + t * 0.018 * 60) * 55;
       ctx.beginPath();
       ctx.arc(px, py, 2.5, 0, Math.PI * 2);
       ctx.fillStyle = '#a78bfa';
@@ -1490,7 +1490,7 @@ function formatPlays(n) {
       animation-delay:   -${Math.random() * 6}s;
       width:             ${Math.random() > 0.7 ? '3px' : '2px'};
       height:            ${Math.random() > 0.7 ? '3px' : '2px'};
-      opacity:           ${0.2 + Math.random() * 0.5};
+      opacity:           ${0.5 + Math.random() * 0.5};
     `;
     container.appendChild(s);
   }
