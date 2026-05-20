@@ -663,7 +663,50 @@ fill='%238b5cf6'/>
   .hero-wrap { height: 320px; }
   .hero-now-playing { top: 14px; right: 14px; }
 }
+.card-plays {
+  font-size: 10px; color: var(--text-muted);
+  display: flex; align-items: center; gap: 4px;
+  margin-top: 2px;
+}
+.card-plays::before {
+  content: '▶';
+  font-size: 8px;
+  opacity: 0.6;
+}
+    .hero-title-anim {
+  font-family: var(--font-display);
+  font-size: 60px;
+  margin-bottom: 10px;
+  display: flex;
+  gap: 1px;
+}
 
+.hero-title-anim span {
+  display: inline-block;
+  animation: letterFloat 3s ease-in-out infinite;
+  color: var(--text-primary);
+}
+
+/* Stagger each letter */
+.hero-title-anim span:nth-child(1)  { animation-delay: 0.00s; }
+.hero-title-anim span:nth-child(2)  { animation-delay: 0.08s; }
+.hero-title-anim span:nth-child(3)  { animation-delay: 0.16s; }
+.hero-title-anim span:nth-child(4)  { animation-delay: 0.24s; }
+.hero-title-anim span:nth-child(5)  { animation-delay: 0.32s; }
+.hero-title-anim span:nth-child(6)  { animation-delay: 0.40s; color: var(--accent-soft); }
+.hero-title-anim span:nth-child(7)  { animation-delay: 0.48s; color: var(--accent-soft); }
+.hero-title-anim span:nth-child(8)  { animation-delay: 0.56s; color: var(--accent-soft); }
+.hero-title-anim span:nth-child(9)  { animation-delay: 0.64s; color: var(--accent-soft); }
+
+@keyframes letterFloat {
+  0%, 100% { transform: translateY(0px);  opacity: 1; }
+  30%       { transform: translateY(-8px); opacity: 0.8; }
+  60%       { transform: translateY(2px);  opacity: 1; }
+}
+
+@media (max-width: 700px) {
+  .hero-title-anim { font-size: 32px; }
+}
   </style>
 </head>
 
@@ -765,7 +808,9 @@ ReeseWave is still in active development. Some features are incomplete or evolvi
     <!-- HERO CONTENT -->
     <div class="hero-content">
       <br>
-      <h1>ReeseWave</h1>
+      <h1 class="hero-title-anim">
+  <span>R</span><span>e</span><span>e</span><span>s</span><span>e</span><span>W</span><span>a</span><span>v</span><span>e</span>
+</h1>
       <p>A platform for discovering and streaming independent music from rising artists across Malawi and beyond.</p>
 <br>
       <button onclick="scrollToMusic()">Explore Music</button>
@@ -870,16 +915,16 @@ ReeseWave is still in active development. Some features are incomplete or evolvi
 /* ── Song data ─────────────────────────────────────────────────────── */
 const SONGS = [
   { id:1,  title:"Trauma",       artist:"Quake STP",   genre:"Trap", src:"music/song1.mpeg",  cover:"images/cover1.jpeg", download:"music/song1.mpeg" },
-  { id:2,  title:"Gumba Gumba",  artist:"S Unco",   genre:"Afro Beat", src:"music/GumbaGumba.mp3",   cover:"images/GumbaGumba.jpg", download:"music/GumbaGumba.mp3" },
-  { id:3,  title:"Wamva", artist:"Bubblegum RBG", genre:"Trap",  src:"music/Wamva.mp3",   cover:"images/Wamvaart.jpg", download:"music/Wamva.mp3" },
-  { id:4,  title:"Smart Kniggah", artist:"KIID thxhomeboi",  genre:"Trap",       src:"music/smartkniggah.mp3",   cover:"images/smartknigga.jpg", download:"music/smartkniggah.mp3" },
-  { id:5,  title:"N'goma",   artist:"Bubblegum RBG",     genre:"Drill", src:"music/N’GOMA.mp3",   cover:"images/Ng'oma (1).jpg", download:"music/N’GOMA.mp3" },
-  { id:11,  title:"Amazing Grace",   artist:"Skyface",     genre:"Trap", src:"music/Amazing Grace.mpeg",   cover:"images/amazinggrace.jpg", download:"music/Amazing Grace.mpeg" },
-  { id:6,  title:"Mirror",  artist:"Bubblegum RBG",   genre:"Trap",        src:"music/mirror.mp3",   cover:"images/mirror.jpg", download:"music/mirror.mp3" },
-  { id:7,  title:"Lottery",     artist:"Bubblegum RBG",  genre:"Trap",       src:"music/lottery.mp3",   cover:"images/lottery.jpg", download:"music/lottery.mp3" },
-  { id:8,  title:"Bread",    artist:"Bubblegum RBG",     genre:"Trap", src:"music/Bread.mp3",   cover:"images/wow.jpg", download:"music/Bread.mp3" },
-  { id:9,  title:"Idya Phazi",  artist:"Bubblegum RBG", genre:"Trap",  src:"music/Idya Phazi.mp3",   cover:"images/bubblegum.jpg", download:"music/Idya Phazi.mp3" },
-  { id:10, title:"Desire",   artist:"Bubblegum RBG",  genre:"Afrobeat",       src:"music/Desire.mp3",  cover:"images/Desire.jpg", download:"music/Desire.mp3" }
+  { id:2,  title:"Gumba Gumba",  artist:"S Unco",   genre:"Afro Beat", src:"music/GumbaGumba.mp3",   cover:"images/GumbaGumba.jpg", download:"music/GumbaGumba.mp3", basePlays: 36 },
+  { id:3,  title:"Wamva", artist:"Bubblegum RBG", genre:"Trap",  src:"music/Wamva.mp3",   cover:"images/Wamvaart.jpg", download:"music/Wamva.mp3", basePlays: 99 },
+  { id:4,  title:"Smart Kniggah", artist:"KIID thxhomeboi",  genre:"Trap",       src:"music/smartkniggah.mp3",   cover:"images/smartknigga.jpg", download:"music/smartkniggah.mp3", basePlays: 6 },
+  { id:5,  title:"N'goma",   artist:"Bubblegum RBG",     genre:"Drill", src:"music/N’GOMA.mp3",   cover:"images/Ng'oma (1).jpg", download:"music/N’GOMA.mp3", basePlays: 159 },
+  { id:11,  title:"Amazing Grace",   artist:"Skyface",     genre:"Trap", src:"music/Amazing Grace.mpeg",   cover:"images/amazinggrace.jpg", download:"music/Amazing Grace.mpeg", basePlays: 24 },
+  { id:6,  title:"Mirror",  artist:"Bubblegum RBG",   genre:"Trap",        src:"music/mirror.mp3",   cover:"images/mirror.jpg", download:"music/mirror.mp3", basePlays: 375 },
+  { id:7,  title:"Lottery",     artist:"Bubblegum RBG",  genre:"Trap",       src:"music/lottery.mp3",   cover:"images/lottery.jpg", download:"music/lottery.mp3", basePlays: 44 },
+  { id:8,  title:"Bread",    artist:"Bubblegum RBG",     genre:"Trap", src:"music/Bread.mp3",   cover:"images/wow.jpg", download:"music/Bread.mp3", basePlays: 124 },
+  { id:9,  title:"Idya Phazi",  artist:"Bubblegum RBG", genre:"Trap",  src:"music/Idya Phazi.mp3",   cover:"images/bubblegum.jpg", download:"music/Idya Phazi.mp3", basePlays: 431 },
+  { id:10, title:"Desire",   artist:"Bubblegum RBG",  genre:"Afrobeat",       src:"music/Desire.mp3",  cover:"images/Desire.jpg", download:"music/Desire.mp3", basePlays: 98 }
 ];
 
 /* ── Artist data ───────────────────────────────────────────────────── */
@@ -964,6 +1009,7 @@ function renderGrid(songs) {
         <div class="card-title">${esc(song.title)}</div>
         <div class="card-artist" onclick="event.stopPropagation(); openArtistModal('${esc(song.artist)}')">${esc(song.artist)}</div>
         <span class="card-genre">${esc(song.genre)}</span>
+        <div class="card-plays">${formatPlays(getPlays(song.id, song.basePlays || 0))}</div>
       </div>
       <div class="card-actions">
   <a class="download-btn" href="${esc(song.download)}" download="${esc(song.title)}"
@@ -993,6 +1039,8 @@ function playFromGrid(i) {
   if (currentIndex === globalIndex) { togglePlayPause(); return; }
 
   currentIndex = globalIndex;
+  incrementPlays(song.id); 
+  renderGrid(currentSongs);
   audioEl.src = song.src;
   audioEl.load();
   audioEl.play().catch(err => console.warn('Playback blocked:', err));
@@ -1284,6 +1332,23 @@ function copySongLink(id) {
   document.body.appendChild(toast);
 
   setTimeout(() => toast.remove(), 2000);
+}
+  // ── Play counts ────────────────────────────────────────────────────
+function getPlays(id, base) {
+  const stored = parseInt(localStorage.getItem('plays_' + id) || '0');
+  return base + stored;
+}
+
+function incrementPlays(id) {
+  const key = 'plays_' + id;
+  const current = parseInt(localStorage.getItem(key) || '0');
+  localStorage.setItem(key, current + 1);
+}
+
+function formatPlays(n) {
+  if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M plays';
+  if (n >= 1000)    return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K plays';
+  return n + ' plays';
 }
 </script>
 </body>
