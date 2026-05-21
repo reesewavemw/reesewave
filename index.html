@@ -1290,27 +1290,38 @@ const SONGS = [
   { id:7,  title:"Lottery",     artist:"Bubblegum RBG",  genre:"Trap",       src:"music/lottery.mp3",   cover:"images/lottery.jpg", download:"music/lottery.mp3", basePlays: 44 },
   { id:8,  title:"Bread",    artist:"Bubblegum RBG",     genre:"Trap", src:"music/Bread.mp3",   cover:"images/wow.jpg", download:"music/Bread.mp3", basePlays: 124 },
   { id:9,  title:"Idya Phazi",  artist:"Bubblegum RBG", genre:"Trap",  src:"music/Idya Phazi.mp3",   cover:"images/bubblegum.jpg", download:"music/Idya Phazi.mp3", basePlays: 431 },
-  { id:10, title:"Desire",   artist:"Bubblegum RBG",  genre:"Afrobeat",       src:"music/Desire.mp3",  cover:"images/Desire.jpg", download:"music/Desire.mp3", basePlays: 98 }
+  { id:10, title:"Desire",   artist:"Bubblegum RBG",  genre:"Afrobeat",       src:"music/Desire.mp3",  cover:"images/Desire.jpg", download:"music/Desire.mp3", basePlays: 98 },
+  { id:12, title:"Bad Guy",   artist:"Bubblegum RBG",  genre:"Afrobeat",       src:"music/bad-guy.mp3",  cover:"images/RBGcompilation.jpg", download:"music/bad-guy.mp3", basePlays: 60 },
+  { id:13, title:"Dance",   artist:"Bubblegum RBG",  genre:"Afrobeat",       src:"music/dance.mp3",  cover:"images/RBGcompilation.jpg", download:"music/dance.mp3", basePlays: 48 },
+  { id:14, title:"Loud",   artist:"Bubblegum RBG",  genre:"Trap",       src:"music/loud.mp3",  cover:"images/RBGcompilation.jpg", download:"music/loud.mp3", basePlays: 50 },
+  { id:15, title:"Paranoid",   artist:"Bubblegum RBG",  genre:"Drill",       src:"music/paranoid.mp3",  cover:"images/RBGcompilation.jpg", download:"music/paranoid.mp3", basePlays: 43 },
+  { id:16, title:"Time",   artist:"Bubblegum RBG",  genre:"Trap",       src:"music/time.mp3",  cover:"images/RBGcompilation.jpg", download:"music/time.mp3", basePlays: 59 },
+  { id:17, title:"No Mistake",   artist:"S Unco",  genre:"Trap",       src:"music/no-mistake.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/no-mistake.mp3", basePlays: 0 },
+  { id:18, title:"Talk Pop",   artist:"S Unco",  genre:"Pop",       src:"music/talk-now.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/talk-now.mp3", basePlays: 0 },
+  { id:19, title:"Regrow",   artist:"S Unco",  genre:"Rap/ Hip Hop",       src:"music/regrow.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/regrow.mp3", basePlays: 0 },
+  { id:20, title:"Somebody's daughter",   artist:"S Unco",  genre:"Trap",       src:"music/somebodys-daughter.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/somebodys-daughter.mp3", basePlays: 0 },
+  { id:21, title:"Gone",   artist:"S Unco",  genre:"Trap",       src:"music/gone.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/gone.mp3", basePlays: 0 },
+  { id:22, title:"Chrome Hearts",   artist:"S Unco",  genre:"Afro Beat",       src:"music/Chrome-hearts.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/Chrome-hearts.mp3", basePlays: 0 }
 ];
 
 /* ── Artist data ───────────────────────────────────────────────────── */
 const ARTISTS = {
   "Quake STP": {
-    genre: "Trap", emoji: "🎸",
+    genre: "Trap/Afro Beat", emoji: "🎸",
     avatar: "images/artist1.jpg",
     bio: "Quake STP is a hard-hitting trap artist from Malawi known for raw energy and cinematic beats.",
     albums: ["RBG Tape"],
     singles: [1]  // song IDs that are singles
   },
   "Skyface": {
-    genre: "Trap", emoji: "🎵",
+    genre: "Trap/Afro Beat", emoji: "🎵",
     avatar: "images/skyface.jpg",
     bio: "Skyface brings soulful melodies over trap production, blending faith and street realism.",
     albums: [],
     singles: [11]
   },
   "S Unco": {
-    genre: "Afro Beat", emoji: "🎤",
+    genre: "Afro Beat/Trap", emoji: "🎤",
     avatar: "",
     bio: "S Unco fuses Afrobeats with local Malawian flavor, creating infectious grooves that move any crowd.",
     albums: [],
@@ -1346,14 +1357,24 @@ const ALBUMS = [
     trackIds: [3, 5, 6, 7, 8, 9, 1]
   },
   {
-    id: "mirror-sessions",
-    title: "Mirror Sessions",
-    artist: "Bubblegum RBG",
-    cover: "images/mirror.jpg",
+    id: "echoes-of-unicorn",
+    title: "Echoes Of Unicorn",
+    artist: "S Unco",
+    cover: "images/echoesofunicorn.jpg",
     year: "2025",
     type: "EP",
     trending: true,
-    trackIds: [6, 7, 8]
+    trackIds: [17, 18, 19, 20, 21, 22]
+  },
+  {
+    id: "rbg-compilation",
+    title: "RBG Compilation",
+    artist: "Bubblegum RBG",
+    cover: "images/RBGcompilation.jpg",
+    year: "2023",
+    type: "EP",          // "Album", "EP", "Single"
+    trending: true,
+    trackIds: [12, 13, 14, 15, 16]
   }
   // Add more albums here following the same structure
 ];
