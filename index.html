@@ -1285,6 +1285,10 @@ const SONGS = [
   { id:3,  title:"Wamva", artist:"Bubblegum RBG", genre:"Trap",  src:"music/Wamva.mp3",   cover:"images/Wamvaart.jpg", download:"music/Wamva.mp3", basePlays: 99 },
   { id:4,  title:"Smart Kniggah", artist:"KIID thxhomeboi",  genre:"Trap",       src:"music/smartkniggah.mp3",   cover:"images/smartknigga.jpg", download:"music/smartkniggah.mp3", basePlays: 6 },
   { id:5,  title:"N'goma",   artist:"Bubblegum RBG",     genre:"Drill", src:"music/N’GOMA.mp3",   cover:"images/Ng'oma (1).jpg", download:"music/N’GOMA.mp3", basePlays: 159 },
+  { id:23, title:"Choose", artist:"Quake STP", genre:"Afro Beat", src:"music/choose.mp3", cover:"images/lepresidente.jpg", download:"music/choose.mp3", basePlays: 0 },
+  { id:24, title:"Follow", artist:"Quake STP", genre:"Afro Beat", src:"music/follow.mp3", cover:"images/lepresidente.jpg", download:"music/follow.mp3", basePlays: 0 },
+  { id:25, title:"Thinking Bout You", artist:"Quake STP", genre:"Afro Beat", src:"music/thinking-bout-you.mp3", cover:"images/lepresidente.jpg", download:"music/thinking-bout-you.mp3", basePlays: 0 },
+  { id:26, title:"Let Go", artist:"Quake STP", genre:"Afro Beat", src:"music/let-go.mp3", cover:"images/lepresidente.jpg", download:"music/let-go.mp3", basePlays: 0 },
   { id:11,  title:"Amazing Grace",   artist:"Skyface",     genre:"Trap", src:"music/Amazing Grace.mpeg",   cover:"images/amazinggrace.jpg", download:"music/Amazing Grace.mpeg", basePlays: 24 },
   { id:6,  title:"Mirror",  artist:"Bubblegum RBG",   genre:"Trap",        src:"music/mirror.mp3",   cover:"images/mirror.jpg", download:"music/mirror.mp3", basePlays: 375 },
   { id:7,  title:"Lottery",     artist:"Bubblegum RBG",  genre:"Trap",       src:"music/lottery.mp3",   cover:"images/lottery.jpg", download:"music/lottery.mp3", basePlays: 44 },
@@ -1310,7 +1314,7 @@ const ARTISTS = {
     genre: "Trap/Afro Beat", emoji: "🎸",
     avatar: "images/artist1.jpg",
     bio: "Quake STP is a hard-hitting trap artist from Malawi known for raw energy and cinematic beats.",
-    albums: ["RBG Tape"],
+    albums: ["Le Presidente"],
     singles: [1]  // song IDs that are singles
   },
   "Skyface": {
@@ -1365,7 +1369,17 @@ const ALBUMS = [
     type: "EP",          // "Album", "EP", "Single"
     trending: true,
     trackIds: [12, 13, 14, 15, 16]
-  }
+  },
+  {
+  id: "le-presidente",
+  title: "Le Presidente",
+  artist: "Quake STP",
+  cover: "images/lepresidente.jpg",
+  year: "2025",
+  type: "EP",
+  trending: true,
+  trackIds: [23, 24, 25, 26]
+}
   // Add more albums here following the same structure
 ];
 
