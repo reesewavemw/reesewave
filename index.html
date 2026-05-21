@@ -1727,15 +1727,22 @@ document.addEventListener('DOMContentLoaded', init);
   function drawBars() {
     ctx.clearRect(0, 0, W, H);
     analyser.getByteFrequencyData(dataArray);
-    const count = Math.min(dataArray.length, 128);
+    const isMobile = window.innerWidth <= 700;
+    const count = Math.min(dataArray.length, isMobile ? 48 : 128);
     const bw    = W / count;
     const yBase = H * 0.72;
     for (let i = 0; i < count; i++) {
       const v  = dataArray[i] / 255;
-      const bh = v * H * 0.68;
+      const bh = v * H * (isMobile ? 0.9 : 0.68);
       ctx.fillStyle = `hsla(${258 + v * 38}, 78%, 65%, ${0.25 + v * 0.75})`;
       ctx.beginPath();
-      ctx.roundRect(i * bw + 1, yBase - bh, bw - 2, bh + (H - yBase), 2);
+      ctx.roundRect(
+  i * bw + 1,
+  yBase - bh,
+  bw - (isMobile ? 1 : 2),
+  bh + (H - yBase),
+  isMobile ? 4 : 2
+);
       ctx.fill();
       // soft reflection
       ctx.fillStyle = `hsla(${258 + v * 38}, 78%, 65%, ${0.06 + v * 0.08})`;
