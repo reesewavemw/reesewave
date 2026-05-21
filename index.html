@@ -785,6 +785,7 @@ fill='%238b5cf6'/>
     linear-gradient(90deg, rgba(139,92,246,0.04) 1px, transparent 1px);
   background-size: 48px 48px;
   pointer-events: none;
+  z-index: 1;
 }
 
 /* Scanline shimmer */
@@ -829,6 +830,98 @@ fill='%238b5cf6'/>
   0%, 100% { opacity: 0; transform: scale(0.5); }
   50%       { opacity: 0.6; transform: scale(1); }
 }
+    /* ── Artist card ───────────────────────────────────────────────────── */
+.artist-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px 16px;
+  display: flex; flex-direction: column;
+  align-items: center; gap: 12px;
+  cursor: pointer; text-align: center;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+.artist-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-accent);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.4);
+}
+.artist-card-avatar {
+  width: 80px; height: 80px; border-radius: 50%;
+  object-fit: cover; border: 2px solid var(--border-accent);
+  background: var(--bg-elevated);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32px; flex-shrink: 0;
+}
+.artist-card-avatar img {
+  width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
+}
+.artist-card-name {
+  font-size: 14px; font-weight: 600; color: var(--text-primary);
+}
+.artist-card-genre {
+  font-size: 11px; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+
+/* ── Album card ────────────────────────────────────────────────────── */
+.album-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden; cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+}
+.album-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-accent);
+  box-shadow: 0 12px 36px rgba(0,0,0,0.4);
+}
+.album-card-cover {
+  width: 100%; aspect-ratio: 1/1;
+  object-fit: cover; background: var(--bg-elevated);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 48px;
+}
+.album-card-cover img { width: 100%; height: 100%; object-fit: cover; }
+.album-card-info { padding: 12px; }
+.album-card-title {
+  font-size: 13px; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.album-card-sub {
+  font-size: 11px; color: var(--text-secondary); margin-top: 3px;
+}
+.album-card-type {
+  display: inline-block; font-size: 9px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  background: var(--accent-dim); color: var(--accent-soft);
+  padding: 2px 7px; border-radius: 99px; margin-top: 5px;
+}
+
+/* ── Track row (used in album modal and artist profile) ────────────── */
+.track-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 8px 10px; border-radius: var(--radius-sm);
+  cursor: pointer; transition: background 0.15s;
+}
+.track-row:hover { background: var(--bg-elevated); }
+.track-row.playing { background: var(--accent-dim); }
+.track-num {
+  font-size: 12px; color: var(--text-muted);
+  width: 20px; text-align: center; flex-shrink: 0;
+}
+.track-cover {
+  width: 38px; height: 38px; border-radius: 6px;
+  object-fit: cover; background: var(--bg-elevated); flex-shrink: 0;
+}
+.track-info { flex: 1; overflow: hidden; }
+.track-title {
+  font-size: 13px; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.track-artist { font-size: 11px; color: var(--text-secondary); }
+.track-plays { font-size: 10px; color: var(--text-muted); flex-shrink: 0; }
   </style>
 </head>
 
@@ -871,23 +964,29 @@ ReeseWave is still in active development. Some features are incomplete or evolvi
     </div>
 
     <span class="nav-section-title">Menu</span>
-    <div class="nav-item active"  onclick="setActiveNav(this); scrollToHome(); closeSidebar()">
-      <span class="icon">⌂</span> Home
-    </div>
+    <div class="nav-item active" onclick="setActiveNav(this); showPage('home'); scrollToHome(); closeSidebar()">
+  <span class="icon">⌂</span> Home
+</div>
     <div class="nav-item" onclick="setActiveNav(this); focusSearch(); closeSidebar()">
       <span class="icon">⌕</span> Search
     </div>
-    <div class="nav-item" onclick="setActiveNav(this); scrollToMusic(); closeSidebar()">
-      <span class="icon">☰</span> Library
-    </div>
+    <div class="nav-item" onclick="setActiveNav(this); showPage('home'); setTimeout(scrollToMusic, 50); closeSidebar()">
+  <span class="icon">☰</span> Library
+</div>
 
     <span class="nav-section-title">Discover</span>
-    <div class="nav-item" onclick="setActiveNav(this); closeSidebar()">
-      <span class="icon">♪</span> Trending
-    </div>
-    <div class="nav-item" onclick="setActiveNav(this); closeSidebar()">
-      <span class="icon">↓</span> Downloads
-    </div>
+<div class="nav-item" onclick="setActiveNav(this); showPage('artists'); closeSidebar()">
+  <span class="icon">👤</span> Artists
+</div>
+<div class="nav-item" onclick="setActiveNav(this); showPage('albums'); closeSidebar()">
+  <span class="icon">💿</span> Albums
+</div>
+<div class="nav-item" onclick="setActiveNav(this); showPage('home'); setTimeout(scrollToMusic, 50); closeSidebar()">
+  <span class="icon">♪</span> Trending
+</div>
+<div class="nav-item" onclick="setActiveNav(this); closeSidebar()">
+  <span class="icon">↓</span> Downloads
+</div>
     <span class="nav-section-title">Beta Release • <br> ReeseWave 2026</span>
   </aside>
 
@@ -960,7 +1059,124 @@ ReeseWave is still in active development. Some features are incomplete or evolvi
   </div>
   
     </div>
+<!-- ================= ARTISTS PAGE ================= -->
+<div id="artists-page" style="display:none; padding: 28px;">
 
+  <div class="section-title" style="margin-bottom: 24px;">Artists</div>
+
+  <!-- Artist grid -->
+  <div id="artist-grid" style="
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 20px;
+    margin-bottom: 40px;
+  "></div>
+
+  <!-- Artist profile (shown when artist clicked) -->
+  <div id="artist-profile" style="display:none;">
+    <button onclick="closeArtistProfile()" style="
+      display: flex; align-items: center; gap: 8px;
+      color: var(--text-secondary); font-size: 13px; margin-bottom: 24px;
+      transition: color 0.15s;
+    " onmouseover="this.style.color='var(--text-primary)'" onmouseout="this.style.color='var(--text-secondary)'">
+      ← Back to Artists
+    </button>
+
+    <!-- Profile header -->
+    <div style="display:flex; align-items:flex-end; gap:24px; margin-bottom:32px; flex-wrap:wrap;">
+      <img id="profile-avatar" src="" alt="" style="
+        width:120px; height:120px; border-radius:50%; object-fit:cover;
+        border:3px solid var(--accent); box-shadow:0 0 0 6px var(--accent-dim);
+        flex-shrink:0;
+      "/>
+      <div>
+        <div style="font-size:11px; color:var(--accent-soft); letter-spacing:1.5px; text-transform:uppercase; margin-bottom:6px;">Artist</div>
+        <div id="profile-name" style="font-family:var(--font-display); font-size:42px; font-weight:800; line-height:1;"></div>
+        <div id="profile-genre" style="color:var(--text-secondary); margin-top:8px; font-size:14px;"></div>
+        <div id="profile-bio" style="color:var(--text-secondary); font-size:13px; line-height:1.6; margin-top:10px; max-width:520px;"></div>
+        <div id="profile-stats" style="display:flex; gap:24px; margin-top:14px;"></div>
+      </div>
+    </div>
+
+    <!-- Albums section -->
+    <div id="profile-albums-section">
+      <div style="font-family:var(--font-display); font-size:18px; font-weight:800; margin-bottom:16px;">Albums & EPs</div>
+      <div id="profile-albums-grid" style="
+        display:grid;
+        grid-template-columns:repeat(auto-fill, minmax(160px,1fr));
+        gap:16px;
+        margin-bottom:32px;
+      "></div>
+    </div>
+
+    <!-- Singles section -->
+    <div id="profile-singles-section">
+      <div style="font-family:var(--font-display); font-size:18px; font-weight:800; margin-bottom:16px;">Singles</div>
+      <div id="profile-singles-list" style="display:flex; flex-direction:column; gap:4px;"></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ================= ALBUMS PAGE ================= -->
+<div id="albums-page" style="display:none; padding:28px;">
+
+  <div class="section-title" style="margin-bottom:8px;">Albums</div>
+  <p style="color:var(--text-secondary); font-size:13px; margin-bottom:28px;">Click an album to browse its tracks</p>
+
+  <div style="font-family:var(--font-display); font-size:16px; font-weight:800; margin-bottom:14px; color:var(--accent-soft);">🔥 Trending</div>
+  <div id="albums-trending-grid" style="
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+    gap:18px;
+    margin-bottom:40px;
+  "></div>
+
+  <div style="font-family:var(--font-display); font-size:16px; font-weight:800; margin-bottom:14px; color:var(--text-secondary);">All Releases</div>
+  <div id="albums-all-grid" style="
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+    gap:18px;
+  "></div>
+
+</div>
+
+<!-- ================= ALBUM DETAIL MODAL ================= -->
+<div id="album-modal-overlay" onclick="closeAlbumModal(event)" style="
+  position:fixed; inset:0; background:rgba(0,0,0,0.75);
+  backdrop-filter:blur(8px); z-index:300;
+  display:none; align-items:center; justify-content:center;
+">
+  <div id="album-modal" onclick="event.stopPropagation()" style="
+    background:var(--bg-modal); border:1px solid var(--border);
+    border-radius:18px; padding:28px; max-width:520px; width:92%;
+    max-height:80vh; overflow-y:auto;
+    box-shadow:0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px var(--border-accent);
+    position:relative;
+  ">
+    <button onclick="document.getElementById('album-modal-overlay').style.display='none'" style="
+      position:absolute; top:14px; right:14px;
+      width:30px; height:30px; background:var(--bg-elevated);
+      border-radius:50%; font-size:15px; color:var(--text-secondary);
+      display:flex; align-items:center; justify-content:center;
+    ">✕</button>
+
+    <div style="display:flex; gap:18px; margin-bottom:20px; align-items:flex-end;">
+      <img id="album-modal-cover" src="" alt="" style="
+        width:90px; height:90px; border-radius:10px; object-fit:cover;
+        border:2px solid var(--border-accent); flex-shrink:0;
+      "/>
+      <div>
+        <div style="font-size:10px; color:var(--accent-soft); text-transform:uppercase; letter-spacing:1px; margin-bottom:4px;" id="album-modal-type"></div>
+        <div id="album-modal-title" style="font-family:var(--font-display); font-size:22px; font-weight:800;"></div>
+        <div id="album-modal-artist" style="font-size:13px; color:var(--text-secondary); margin-top:4px;"></div>
+        <div id="album-modal-year" style="font-size:11px; color:var(--text-muted); margin-top:2px;"></div>
+      </div>
+    </div>
+
+    <div id="album-modal-tracks" style="display:flex; flex-direction:column; gap:2px;"></div>
+  </div>
+</div>
     <!-- Music section -->
     
 
@@ -1014,7 +1230,8 @@ ReeseWave is still in active development. Some features are incomplete or evolvi
       <div id="expanded-cover-placeholder" class="expanded-cover-placeholder">🎵</div>
       <div class="expanded-details">
         <div class="expanded-title" id="expanded-title">—</div>
-        <div class="expanded-artist" id="expanded-artist" onclick="openCurrentArtistModal()">—</div>
+        <div class="expanded-artist" id="expanded-artist"
+  onclick="if(currentIndex>=0){ const n=SONGS[currentIndex]?.artist; showPage('artists'); setTimeout(()=>{ document.querySelectorAll('.nav-item').forEach(el=>el.classList.remove('active')); openArtistProfile(n); }, 50); }">—</div>
         <span class="expanded-genre" id="expanded-genre">—</span>
         <p class="expanded-bio" id="expanded-bio"></p>
       </div>
@@ -1054,14 +1271,70 @@ const SONGS = [
 
 /* ── Artist data ───────────────────────────────────────────────────── */
 const ARTISTS = {
-  "Quake STP":   { genre:"Trap",       bio:"", avatar:"images/artist1.jpg", emoji:"🎸" },
-  "Skyface":   { genre:"Trap",       bio:"", avatar:"images/skyface.jpg", emoji:"🎸" },
-  "S Unco":   { genre:"Afro Beat",        bio:"", avatar:"",                   emoji:"🎤" },
-  "Bubblegum RBG": { genre:"Trap",  bio:"A Malawian music group consisting of San D RBG kay , S~unicorn, Skyface , Quake STP and KIID EF [KIID Thxhomeboi]", avatar:"images/rbg.jpg", emoji:"🥁" },
-  "KIID thxhomeboi":  { genre:"Trap",       bio:"", avatar:"images/kiidef.jpg", emoji:"🎹" }
+  "Quake STP": {
+    genre: "Trap", emoji: "🎸",
+    avatar: "images/artist1.jpg",
+    bio: "Quake STP is a hard-hitting trap artist from Malawi known for raw energy and cinematic beats.",
+    albums: ["RBG Tape"],
+    singles: [1]  // song IDs that are singles
+  },
+  "Skyface": {
+    genre: "Trap", emoji: "🎵",
+    avatar: "images/skyface.jpg",
+    bio: "Skyface brings soulful melodies over trap production, blending faith and street realism.",
+    albums: [],
+    singles: [11]
+  },
+  "S Unco": {
+    genre: "Afro Beat", emoji: "🎤",
+    avatar: "",
+    bio: "S Unco fuses Afrobeats with local Malawian flavor, creating infectious grooves that move any crowd.",
+    albums: [],
+    singles: [2]
+  },
+  "Bubblegum RBG": {
+    genre: "Trap", emoji: "🥁",
+    avatar: "images/rbg.jpg",
+    bio: "A Malawian music group consisting of San D RBG kay, S~unicorn, Skyface, Quake STP and KIID EF [KIID Thxhomeboi].",
+    albums: ["RBG Tape", "Mirror Sessions"],
+    singles: [10]
+  },
+  "KIID thxhomeboi": {
+    genre: "Trap", emoji: "🎹",
+    avatar: "images/kiidef.jpg",
+    bio: "KIID thxhomeboi delivers smooth trap flows with introspective lyricism.",
+    albums: [],
+    singles: [4]
+  }
 };
 
-const GENRE_EMOJI = { "Afrobeats":"🥁", "R&B":"🎤", "Soul":"🎹", "Electronic":"🎧", "Trap":"🎸", "default":"🎵" };
+// ── Album data ──────────────────────────────────────────────────────
+// trackIds reference song IDs in the SONGS array
+const ALBUMS = [
+  {
+    id: "rbg-tape",
+    title: "RBG Tape",
+    artist: "Bubblegum RBG",
+    cover: "images/rbg.jpg",
+    year: "2024",
+    type: "Album",          // "Album", "EP", "Single"
+    trending: true,
+    trackIds: [3, 5, 6, 7, 8, 9, 1]
+  },
+  {
+    id: "mirror-sessions",
+    title: "Mirror Sessions",
+    artist: "Bubblegum RBG",
+    cover: "images/mirror.jpg",
+    year: "2025",
+    type: "EP",
+    trending: true,
+    trackIds: [6, 7, 8]
+  }
+  // Add more albums here following the same structure
+];
+
+const GENRE_EMOJI = { "Afrobeats":"🥁", "Afro Beat":"🥁", "Afrobeat":"🥁", "R&B":"🎤", "Soul":"🎹", "Electronic":"🎧", "Trap":"🎸", "Drill":"🔥", "default":"🎵" };
 
 /* ── State ─────────────────────────────────────────────────────────── */
 let currentIndex = -1;
@@ -1168,14 +1441,25 @@ function playFromGrid(i) {
   renderGrid(currentSongs);
   audioEl.src = song.src;
   audioEl.load();
-  audioEl.play().catch(err => console.warn('Playback blocked:', err));
+  audioEl.play().then(() => {
+  if (window.heroConnectAudio) heroConnectAudio(audioEl);
+}).catch(err => console.warn('Playback blocked:', err));
   document.getElementById('hero-now-playing').classList.add('visible'); document.getElementById('hero-now-playing-title').textContent = song.title;
-  document.body.addEventListener("click", () => {
-  audioEl.play().catch(() => {});
-}, { once: true });
 
   updatePlayerBar(song);
   updateAllCards();
+  // refresh any open track rows
+document.querySelectorAll('.track-row').forEach(row => {
+  row.classList.remove('playing');
+  const titleEl = row.querySelector('.track-title');
+  const numEl   = row.querySelector('.track-num');
+  if (!titleEl || !numEl) return;
+  const matchingSong = SONGS.find(s => s.title === titleEl.textContent);
+  if (matchingSong && currentIndex >= 0 && SONGS[currentIndex].id === matchingSong.id) {
+    row.classList.add('playing');
+    numEl.textContent = '▶';
+  }
+});
 }
 
 function togglePlayPause() {
@@ -1432,18 +1716,6 @@ document.addEventListener('DOMContentLoaded', init);
 })();
 function copySongLink(id) {
   const url = `${window.location.origin}${window.location.pathname}?play=${id}`;
-
-  navigator.clipboard.writeText(url).then(() => {
-    alert("Link copied!");
-  }).catch(err => {
-    console.error("Copy failed", err);
-  });
-}
-setTimeout(() => {
-  document.getElementById("player").scrollIntoView({ behavior: "smooth" });
-}, 800);
-function copySongLink(id) {
-  const url = `${window.location.origin}${window.location.pathname}?play=${id}`;
   navigator.clipboard.writeText(url);
 
   const toast = document.createElement("div");
@@ -1495,6 +1767,201 @@ function formatPlays(n) {
     container.appendChild(s);
   }
 })();
+  // ── Page routing ────────────────────────────────────────────────────
+function showPage(page) {
+  document.getElementById('home-section').style.display    = page === 'home'    ? '' : 'none';
+  document.getElementById('artists-page').style.display   = page === 'artists' ? '' : 'none';
+  document.getElementById('albums-page').style.display    = page === 'albums'  ? '' : 'none';
+
+  if (page === 'artists') renderArtistsPage();
+  if (page === 'albums')  renderAlbumsPage();
+}
+
+// ── Artists page ────────────────────────────────────────────────────
+function renderArtistsPage() {
+  const grid = document.getElementById('artist-grid');
+  grid.innerHTML = '';
+  document.getElementById('artist-profile').style.display = 'none';
+  document.getElementById('artist-grid').style.display    = 'grid';
+
+  Object.entries(ARTISTS).forEach(([name, artist]) => {
+    const card = document.createElement('div');
+    card.className = 'artist-card';
+    card.onclick = () => openArtistProfile(name);
+
+    const avatarHTML = artist.avatar
+      ? `<div class="artist-card-avatar"><img src="${esc(artist.avatar)}" alt="${esc(name)}" /></div>`
+      : `<div class="artist-card-avatar">${artist.emoji}</div>`;
+
+    // Count songs
+    const songCount = SONGS.filter(s => s.artist === name).length;
+
+    card.innerHTML = `
+      ${avatarHTML}
+      <div class="artist-card-name">${esc(name)}</div>
+      <div class="artist-card-genre">${esc(artist.genre)}</div>
+      <div style="font-size:11px; color:var(--text-muted);">${songCount} track${songCount !== 1 ? 's' : ''}</div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function openArtistProfile(name) {
+  const artist = ARTISTS[name];
+  if (!artist) return;
+
+  document.getElementById('artist-grid').style.display    = 'none';
+  document.getElementById('artist-profile').style.display = 'block';
+
+  // Header
+  const avatarEl = document.getElementById('profile-avatar');
+  avatarEl.src = artist.avatar || `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><rect width='120' height='120' rx='60' fill='%231c1c21'/><text x='60' y='78' text-anchor='middle' font-size='52'>${encodeURIComponent(artist.emoji)}</text></svg>`;
+  document.getElementById('profile-name').textContent  = name;
+  document.getElementById('profile-genre').textContent = artist.genre;
+  document.getElementById('profile-bio').textContent   = artist.bio || '';
+
+  // Stats
+  const allSongs   = SONGS.filter(s => s.artist === name);
+  const totalPlays = allSongs.reduce((sum, s) => sum + getPlays(s.id, s.basePlays || 0), 0);
+  document.getElementById('profile-stats').innerHTML = `
+    <div><div style="font-size:18px;font-weight:700;">${allSongs.length}</div><div style="font-size:11px;color:var(--text-muted);">Tracks</div></div>
+    <div><div style="font-size:18px;font-weight:700;">${formatPlays(totalPlays)}</div><div style="font-size:11px;color:var(--text-muted);">Total plays</div></div>
+    <div><div style="font-size:18px;font-weight:700;">${(artist.albums||[]).length}</div><div style="font-size:11px;color:var(--text-muted);">Releases</div></div>
+  `;
+
+  // Albums
+  const artistAlbums = ALBUMS.filter(a => a.artist === name);
+  const albumsSection = document.getElementById('profile-albums-section');
+  const albumsGrid    = document.getElementById('profile-albums-grid');
+  albumsSection.style.display = artistAlbums.length ? 'block' : 'none';
+  albumsGrid.innerHTML = '';
+  artistAlbums.forEach(album => {
+    const card = document.createElement('div');
+    card.className = 'album-card';
+    card.onclick = () => openAlbumModal(album.id);
+    const coverHTML = album.cover
+      ? `<div class="album-card-cover"><img src="${esc(album.cover)}" /></div>`
+      : `<div class="album-card-cover">💿</div>`;
+    card.innerHTML = `
+      ${coverHTML}
+      <div class="album-card-info">
+        <div class="album-card-title">${esc(album.title)}</div>
+        <div class="album-card-sub">${album.trackIds.length} tracks • ${album.year}</div>
+        <span class="album-card-type">${esc(album.type)}</span>
+      </div>
+    `;
+    albumsGrid.appendChild(card);
+  });
+
+  // Singles
+  const singleIds   = artist.singles || [];
+  const singleSongs = SONGS.filter(s => singleIds.includes(s.id));
+  const singlesSection = document.getElementById('profile-singles-section');
+  const singlesList    = document.getElementById('profile-singles-list');
+  singlesSection.style.display = singleSongs.length ? 'block' : 'none';
+  singlesList.innerHTML = '';
+  singleSongs.forEach((song, idx) => {
+    singlesList.appendChild(buildTrackRow(song, idx + 1));
+  });
+
+  // Scroll to top
+  document.getElementById('main').scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function closeArtistProfile() {
+  document.getElementById('artist-profile').style.display = 'none';
+  document.getElementById('artist-grid').style.display    = 'grid';
+}
+
+// ── Albums page ─────────────────────────────────────────────────────
+function renderAlbumsPage() {
+  renderAlbumGrid('albums-trending-grid', ALBUMS.filter(a => a.trending));
+  renderAlbumGrid('albums-all-grid', ALBUMS);
+}
+
+function renderAlbumGrid(containerId, albums) {
+  const grid = document.getElementById(containerId);
+  grid.innerHTML = '';
+  albums.forEach(album => {
+    const card = document.createElement('div');
+    card.className = 'album-card';
+    card.onclick = () => openAlbumModal(album.id);
+    const coverHTML = album.cover
+      ? `<div class="album-card-cover"><img src="${esc(album.cover)}" /></div>`
+      : `<div class="album-card-cover">💿</div>`;
+    card.innerHTML = `
+      ${coverHTML}
+      <div class="album-card-info">
+        <div class="album-card-title">${esc(album.title)}</div>
+        <div class="album-card-sub">${esc(album.artist)} • ${album.year}</div>
+        <div class="album-card-sub" style="margin-top:2px;">${album.trackIds.length} tracks</div>
+        <span class="album-card-type">${esc(album.type)}</span>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function openAlbumModal(albumId) {
+  const album = ALBUMS.find(a => a.id === albumId);
+  if (!album) return;
+
+  document.getElementById('album-modal-cover').src       = album.cover || '';
+  document.getElementById('album-modal-title').textContent  = album.title;
+  document.getElementById('album-modal-artist').textContent = album.artist;
+  document.getElementById('album-modal-year').textContent   = album.year;
+  document.getElementById('album-modal-type').textContent   = album.type;
+
+  const trackList = document.getElementById('album-modal-tracks');
+  trackList.innerHTML = '';
+  album.trackIds.forEach((id, idx) => {
+    const song = SONGS.find(s => s.id === id);
+    if (song) trackList.appendChild(buildTrackRow(song, idx + 1));
+  });
+
+  document.getElementById('album-modal-overlay').style.display = 'flex';
+}
+
+function closeAlbumModal(e) {
+  if (e.target === document.getElementById('album-modal-overlay')) {
+    document.getElementById('album-modal-overlay').style.display = 'none';
+  }
+}
+
+// ── Shared: build a clickable track row ─────────────────────────────
+function buildTrackRow(song, num) {
+  const isPlaying = currentIndex >= 0 && SONGS[currentIndex].id === song.id;
+  const row = document.createElement('div');
+  row.className = 'track-row' + (isPlaying ? ' playing' : '');
+
+  const coverHTML = song.cover
+    ? `<img class="track-cover" src="${esc(song.cover)}" alt="" />`
+    : `<div class="track-cover" style="display:flex;align-items:center;justify-content:center;font-size:16px;">${GENRE_EMOJI[song.genre]||'🎵'}</div>`;
+
+  row.innerHTML = `
+    <div class="track-num">${isPlaying ? '▶' : num}</div>
+    ${coverHTML}
+    <div class="track-info">
+      <div class="track-title">${esc(song.title)}</div>
+      <div class="track-artist">${esc(song.artist)}</div>
+    </div>
+    <div class="track-plays">${formatPlays(getPlays(song.id, song.basePlays || 0))}</div>
+  `;
+
+  row.onclick = () => {
+    // Find index in currentSongs (fall back to full SONGS)
+    let idx = currentSongs.findIndex(s => s.id === song.id);
+    if (idx === -1) {
+      currentSongs = [...SONGS];
+      idx = currentSongs.findIndex(s => s.id === song.id);
+    }
+    playFromGrid(idx);
+    // Close album modal if open
+    document.getElementById('album-modal-overlay').style.display = 'none';
+  };
+
+  return row;
+}
 </script>
 </body>
 </html>
