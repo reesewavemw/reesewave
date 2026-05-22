@@ -1577,33 +1577,33 @@ onclick="if(currentIndex>=0){ const n=SONGS[currentIndex]?.artist; showPage('art
 <script>
 /* ── Song data ─────────────────────────────────────────────────────── */
 const SONGS = [
-{ id:1,  title:"Trauma",       artist:"Quake STP",   genre:"Trap", src:"music/song1.mpeg",  cover:"images/cover1.jpeg", download:"music/song1.mpeg" },
+{ id:1,  title:"Trauma",       artist:"Quake STP",   genre:"Trap", src:"music/song1.mpeg",  cover:"images/cover1.jpeg", download:"music/song1.mpeg", basePlays: 54 },
 { id:2,  title:"Gumba Gumba",  artist:"S Unco",   genre:"Afro Beat", src:"music/GumbaGumba.mp3",   cover:"images/GumbaGumba.jpg", download:"music/GumbaGumba.mp3", basePlays: 36 },
 { id:3,  title:"Wamva", artist:"Bubblegum RBG", genre:"Trap",  src:"music/Wamva.mp3",   cover:"images/Wamvaart.jpg", download:"music/Wamva.mp3", basePlays: 99 },
-{ id:4,  title:"Smart Kniggah", artist:"KIID thxhomeboi",  genre:"Trap",       src:"music/smartkniggah.mp3",   cover:"images/smartknigga.jpg", download:"music/smartkniggah.mp3", basePlays: 6 },
+{ id:4,  title:"Smart Kniggah", artist:"KIID thxhomeboi",  genre:"Trap",       src:"music/smartkniggah.mp3",   cover:"images/smartknigga.jpg", download:"music/smartkniggah.mp3", basePlays: 56 },
 { id:5,  title:"N'goma",   artist:"Bubblegum RBG",     genre:"Drill", src:"music/N’GOMA.mp3",   cover:"images/Ng'oma (1).jpg", download:"music/N’GOMA.mp3", basePlays: 159 },
-{ id:23, title:"Choose", artist:"Quake STP", genre:"Afro Beat", src:"music/choose.mp3", cover:"images/lepresidente.jpg", download:"music/choose.mp3", basePlays: 0 },
-{ id:24, title:"Follow", artist:"Quake STP", genre:"Afro Beat", src:"music/follow.mp3", cover:"images/lepresidente.jpg", download:"music/follow.mp3", basePlays: 0 },
-{ id:25, title:"Thinking Bout You", artist:"Quake STP", genre:"Afro Beat", src:"music/thinking-bout-you.mp3", cover:"images/lepresidente.jpg", download:"music/thinking-bout-you.mp3", basePlays: 0 },
-{ id:26, title:"Let Go", artist:"Quake STP", genre:"Afro Beat", src:"music/let-go.mp3", cover:"images/lepresidente.jpg", download:"music/let-go.mp3", basePlays: 0 },
-{id:27, title:"TV Yankhongo", artist:"Raspergal", genre:"Hip-Hop/Rap", src:"music/tv-yankhongo.mp3", cover:"images/sneakylink.jpg", download:"music/tv-yankhongo.mp3"},
-{id:28, title:"My Energy", artist:"Raspergal", genre:"Afro Fusion", src:"music/my-energy.mp3", cover:"images/sneakylink.jpg", download:"music/my-energy.mp3"},
-{id:29, title:"Ka Lowkey", artist:"Raspergal", genre:"Hip-Hop/Rap", src:"music/ka-lowkey.mp3", cover:"images/sneakylink.jpg", download:"music/ka-lowkey.mp3"},
-{id:30, title:"Mwano", artist:"Raspergal", genre:"Afro Fusion", src:"music/mwano.mp3", cover:"images/sneakylink.jpg", download:"music/mwano.mp3"},
-{id:31, title:"For You", artist:"Raspergal", genre:"Afro Fusion", src:"music/for-you.mp3", cover:"images/sneakylink.jpg", download:"music/for-you.mp3"},
-{id:32, title:"Sneakin and Hide", artist:"Raspergal", genre:"Drill", src:"music/sneakin-and-hide.mp3", cover:"images/sneakylink.jpg", download:"music/sneakin-and-hide.mp3"},
+{ id:23, title:"Choose", artist:"Quake STP", genre:"Afro Beat", src:"music/choose.mp3", cover:"images/lepresidente.jpg", download:"music/choose.mp3", basePlays: 38 },
+{ id:24, title:"Follow", artist:"Quake STP", genre:"Afro Beat", src:"music/follow.mp3", cover:"images/lepresidente.jpg", download:"music/follow.mp3", basePlays: 41 },
+{ id:25, title:"Thinking Bout You", artist:"Quake STP", genre:"Afro Beat", src:"music/thinking-bout-you.mp3", cover:"images/lepresidente.jpg", download:"music/thinking-bout-you.mp3", basePlays: 78 },
+{ id:26, title:"Let Go", artist:"Quake STP", genre:"Afro Beat", src:"music/let-go.mp3", cover:"images/lepresidente.jpg", download:"music/let-go.mp3", basePlays: 79 },
+{id:27, title:"TV Yankhongo", artist:"Raspergal", genre:"Hip-Hop/Rap", src:"music/tv-yankhongo.mp3", cover:"images/sneakylink.jpg", download:"music/tv-yankhongo.mp3", basePlays: 24},
+{id:28, title:"My Energy", artist:"Raspergal", genre:"Afro Fusion", src:"music/my-energy.mp3", cover:"images/sneakylink.jpg", download:"music/my-energy.mp3", basePlays: 54},
+{id:29, title:"Ka Lowkey", artist:"Raspergal", genre:"Hip-Hop/Rap", src:"music/ka-lowkey.mp3", cover:"images/sneakylink.jpg", download:"music/ka-lowkey.mp3", basePlays: 33},
+{id:30, title:"Mwano", artist:"Raspergal", genre:"Afro Fusion", src:"music/mwano.mp3", cover:"images/sneakylink.jpg", download:"music/mwano.mp3", basePlays: 47},
+{id:31, title:"For You", artist:"Raspergal", genre:"Afro Fusion", src:"music/for-you.mp3", cover:"images/sneakylink.jpg", download:"music/for-you.mp3", basePlays: 15},
+{id:32, title:"Sneakin and Hide", artist:"Raspergal", genre:"Drill", src:"music/sneakin-and-hide.mp3", cover:"images/sneakylink.jpg", download:"music/sneakin-and-hide.mp3", basePlays: 25},
 { id:11,  title:"Amazing Grace",   artist:"Skyface",     genre:"Trap", src:"music/Amazing Grace.mpeg",   cover:"images/amazinggrace.jpg", download:"music/Amazing Grace.mpeg", basePlays: 24 },
 { id:6,  title:"Mirror",  artist:"Bubblegum RBG",   genre:"Trap",        src:"music/mirror.mp3",   cover:"images/mirror.jpg", download:"music/mirror.mp3", basePlays: 375 },
 { id:7,  title:"Lottery",     artist:"Bubblegum RBG",  genre:"Trap",       src:"music/lottery.mp3",   cover:"images/lottery.jpg", download:"music/lottery.mp3", basePlays: 44 },
 { id:8,  title:"Bread",    artist:"Bubblegum RBG",     genre:"Trap", src:"music/Bread.mp3",   cover:"images/wow.jpg", download:"music/Bread.mp3", basePlays: 124 },
 { id:9,  title:"Idya Phazi",  artist:"Bubblegum RBG", genre:"Trap",  src:"music/Idya Phazi.mp3",   cover:"images/bubblegum.jpg", download:"music/Idya Phazi.mp3", basePlays: 431 },
 { id:10, title:"Desire",   artist:"Bubblegum RBG",  genre:"Afrobeat",       src:"music/Desire.mp3",  cover:"images/Desire.jpg", download:"music/Desire.mp3", basePlays: 98 },
-{ id:17, title:"No Mistake",   artist:"S Unco",  genre:"Trap",       src:"music/no-mistake.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/no-mistake.mp3", basePlays: 0 },
-{ id:18, title:"Talk Pop",   artist:"S Unco",  genre:"Pop",       src:"music/talk-now.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/talk-now.mp3", basePlays: 0 },
-{ id:19, title:"Regrow",   artist:"S Unco",  genre:"Rap/ Hip Hop",       src:"music/regrow.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/regrow.mp3", basePlays: 0 },
-{ id:20, title:"Somebody's daughter",   artist:"S Unco",  genre:"Trap",       src:"music/somebodys-daughter.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/somebodys-daughter.mp3", basePlays: 0 },
-{ id:21, title:"Gone",   artist:"S Unco",  genre:"Trap",       src:"music/gone.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/gone.mp3", basePlays: 0 },
-{ id:22, title:"Chrome Hearts",   artist:"S Unco",  genre:"Afro Beat",       src:"music/Chrome-hearts.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/Chrome-hearts.mp3", basePlays: 0 },
+{ id:17, title:"No Mistake",   artist:"S Unco",  genre:"Trap",       src:"music/no-mistake.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/no-mistake.mp3", basePlays: 43 },
+{ id:18, title:"Talk Pop",   artist:"S Unco",  genre:"Pop",       src:"music/talk-now.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/talk-now.mp3", basePlays: 101 },
+{ id:19, title:"Regrow",   artist:"S Unco",  genre:"Rap/ Hip Hop",       src:"music/regrow.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/regrow.mp3", basePlays: 86 },
+{ id:20, title:"Somebody's daughter",   artist:"S Unco",  genre:"Trap",       src:"music/somebodys-daughter.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/somebodys-daughter.mp3", basePlays: 86 },
+{ id:21, title:"Gone",   artist:"S Unco",  genre:"Trap",       src:"music/gone.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/gone.mp3", basePlays: 66 },
+{ id:22, title:"Chrome Hearts",   artist:"S Unco",  genre:"Afro Beat",       src:"music/Chrome-hearts.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/Chrome-hearts.mp3", basePlays: 75 },
 { id:12, title:"Bad Guy",   artist:"Bubblegum RBG",  genre:"Afrobeat",       src:"music/bad-guy.mp3",  cover:"images/RBGcompilation.jpg", download:"music/bad-guy.mp3", basePlays: 60 },
 { id:13, title:"Dance",   artist:"Bubblegum RBG",  genre:"Afrobeat",       src:"music/dance.mp3",  cover:"images/RBGcompilation.jpg", download:"music/dance.mp3", basePlays: 48 },
 { id:14, title:"Loud",   artist:"Bubblegum RBG",  genre:"Trap",       src:"music/loud.mp3",  cover:"images/RBGcompilation.jpg", download:"music/loud.mp3", basePlays: 50 },
@@ -1713,19 +1713,6 @@ const audioEl = document.getElementById('audio-player');
 /* ── Init ──────────────────────────────────────────────────────────── */
 function init() {
 currentSongs = [...SONGS];
-     async function init() {
-  currentSongs = [...SONGS];
-
-  // Load play counts from API
-  await Promise.all(SONGS.map(async song => {
-    try {
-      const res = await fetch(`${COUNT_BASE}/get/reesewave-song-${song.id}`);
-      const data = await res.json();
-      song._plays = (song.basePlays || 0) + (parseInt(data.value) || 0);
-    } catch(e) {
-      song._plays = song.basePlays || 0;
-    }
-  }));
 renderGrid(currentSongs);
 renderHomeArtists();
 renderHomeAlbums();
@@ -1839,6 +1826,7 @@ currentIndex = globalIndex;
 incrementPlays(song.id); 
 renderGrid(currentSongs);
 audioEl.src = song.src;
+audioEl.load();
 audioEl.play().then(() => {
 if (window.heroConnectAudio) heroConnectAudio(audioEl);
 }).catch(err => console.warn('Playback blocked:', err));
@@ -2238,26 +2226,21 @@ document.body.appendChild(toast);
 setTimeout(() => toast.remove(), 2000);
 }
 // ── Play counts ────────────────────────────────────────────────────
-const COUNT_BASE = 'https://countapi.mileshilliard.com/api/v1';
-
 function getPlays(id, base) {
-  const song = SONGS.find(s => s.id === id);
-  return song?._plays ?? (base || 0);
+const stored = parseInt(localStorage.getItem('plays_' + id) || '0');
+return base + stored;
 }
 
-async function incrementPlays(id) {
-  const song = SONGS.find(s => s.id === id);
-  if (song) song._plays = (song._plays || 0) + 1;
-  try {
-    await fetch(`${COUNT_BASE}/hit/reesewave-song-${id}`);
-  } catch(e) {}
+function incrementPlays(id) {
+const key = 'plays_' + id;
+const current = parseInt(localStorage.getItem(key) || '0');
+localStorage.setItem(key, current + 1);
 }
 
 function formatPlays(n) {
-  if (!n) return '0 plays';
-  if (n >= 1000000) return (n/1000000).toFixed(1).replace(/\.0$/,'') + 'M plays';
-  if (n >= 1000)    return (n/1000).toFixed(1).replace(/\.0$/,'') + 'K plays';
-  return n + ' plays';
+if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M plays';
+if (n >= 1000)    return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K plays';
+return n + ' plays';
 }
 // ── Hero stars ─────────────────────────────────────────────────────
 (function () {
@@ -2416,6 +2399,7 @@ card.innerHTML = `
        <br>
        <div style="padding: 0 12px 12px; display:flex; justify-content:flex-end;">
          <button class="download-btn" onclick="event.stopPropagation(); copyAlbumLink('${esc(album.id)}')" title="Copy album link">🔗 Share</button>
+</div>
      </div>
      </div>
    `;
