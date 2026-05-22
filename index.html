@@ -1239,7 +1239,7 @@ ReeseWave is still in active development. Some features are incomplete or evolvi
     box-shadow:0 30px 80px rgba(0,0,0,0.6), 0 0 0 1px var(--border-accent);
     position:relative;
   ">
-    <button onclick="document.getElementById('album-modal-overlay').style.display='none'" style="
+    <button onclick="closeAlbumModal({target: document.getElementById('album-modal-overlay')})" style="
       position:absolute; top:14px; right:14px;
       width:30px; height:30px; background:var(--bg-elevated);
       border-radius:50%; font-size:15px; color:var(--text-secondary);
@@ -1362,17 +1362,17 @@ const SONGS = [
   { id:8,  title:"Bread",    artist:"Bubblegum RBG",     genre:"Trap", src:"music/Bread.mp3",   cover:"images/wow.jpg", download:"music/Bread.mp3", basePlays: 124 },
   { id:9,  title:"Idya Phazi",  artist:"Bubblegum RBG", genre:"Trap",  src:"music/Idya Phazi.mp3",   cover:"images/bubblegum.jpg", download:"music/Idya Phazi.mp3", basePlays: 431 },
   { id:10, title:"Desire",   artist:"Bubblegum RBG",  genre:"Afrobeat",       src:"music/Desire.mp3",  cover:"images/Desire.jpg", download:"music/Desire.mp3", basePlays: 98 },
-  { id:12, title:"Bad Guy",   artist:"Bubblegum RBG",  genre:"Afrobeat",       src:"music/bad-guy.mp3",  cover:"images/RBGcompilation.jpg", download:"music/bad-guy.mp3", basePlays: 60 },
-  { id:13, title:"Dance",   artist:"Bubblegum RBG",  genre:"Afrobeat",       src:"music/dance.mp3",  cover:"images/RBGcompilation.jpg", download:"music/dance.mp3", basePlays: 48 },
-  { id:14, title:"Loud",   artist:"Bubblegum RBG",  genre:"Trap",       src:"music/loud.mp3",  cover:"images/RBGcompilation.jpg", download:"music/loud.mp3", basePlays: 50 },
-  { id:15, title:"Paranoid",   artist:"Bubblegum RBG",  genre:"Drill",       src:"music/paranoid.mp3",  cover:"images/RBGcompilation.jpg", download:"music/paranoid.mp3", basePlays: 43 },
-  { id:16, title:"Time",   artist:"Bubblegum RBG",  genre:"Trap",       src:"music/time.mp3",  cover:"images/RBGcompilation.jpg", download:"music/time.mp3", basePlays: 59 },
   { id:17, title:"No Mistake",   artist:"S Unco",  genre:"Trap",       src:"music/no-mistake.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/no-mistake.mp3", basePlays: 0 },
   { id:18, title:"Talk Pop",   artist:"S Unco",  genre:"Pop",       src:"music/talk-now.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/talk-now.mp3", basePlays: 0 },
   { id:19, title:"Regrow",   artist:"S Unco",  genre:"Rap/ Hip Hop",       src:"music/regrow.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/regrow.mp3", basePlays: 0 },
   { id:20, title:"Somebody's daughter",   artist:"S Unco",  genre:"Trap",       src:"music/somebodys-daughter.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/somebodys-daughter.mp3", basePlays: 0 },
   { id:21, title:"Gone",   artist:"S Unco",  genre:"Trap",       src:"music/gone.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/gone.mp3", basePlays: 0 },
-  { id:22, title:"Chrome Hearts",   artist:"S Unco",  genre:"Afro Beat",       src:"music/Chrome-hearts.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/Chrome-hearts.mp3", basePlays: 0 }
+  { id:22, title:"Chrome Hearts",   artist:"S Unco",  genre:"Afro Beat",       src:"music/Chrome-hearts.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/Chrome-hearts.mp3", basePlays: 0 },
+  { id:12, title:"Bad Guy",   artist:"Bubblegum RBG",  genre:"Afrobeat",       src:"music/bad-guy.mp3",  cover:"images/RBGcompilation.jpg", download:"music/bad-guy.mp3", basePlays: 60 },
+  { id:13, title:"Dance",   artist:"Bubblegum RBG",  genre:"Afrobeat",       src:"music/dance.mp3",  cover:"images/RBGcompilation.jpg", download:"music/dance.mp3", basePlays: 48 },
+  { id:14, title:"Loud",   artist:"Bubblegum RBG",  genre:"Trap",       src:"music/loud.mp3",  cover:"images/RBGcompilation.jpg", download:"music/loud.mp3", basePlays: 50 },
+  { id:15, title:"Paranoid",   artist:"Bubblegum RBG",  genre:"Drill",       src:"music/paranoid.mp3",  cover:"images/RBGcompilation.jpg", download:"music/paranoid.mp3", basePlays: 43 },
+  { id:16, title:"Time",   artist:"Bubblegum RBG",  genre:"Trap",       src:"music/time.mp3",  cover:"images/RBGcompilation.jpg", download:"music/time.mp3", basePlays: 59 }
 ];
 
 /* ── Artist data ───────────────────────────────────────────────────── */
@@ -1502,6 +1502,21 @@ renderHomeAlbums();
           console.log("Autoplay blocked:", e);
         }
       }, 300);
+    }
+  }
+  const albumId = params.get("album");
+  if (albumId) {
+    const album = ALBUMS.find(a => a.id === albumId);
+    if (album) {
+      setTimeout(() => {
+        openAlbumModal(albumId);
+        const firstSong = SONGS.find(s => s.id === album.trackIds[0]);
+        if (firstSong) {
+          currentSongs = [...SONGS];
+          const idx = currentSongs.findIndex(s => s.id === firstSong.id);
+          playFromGrid(idx);
+        }
+      }, 400);
     }
   }
 
@@ -1836,7 +1851,6 @@ function esc(str) {
 
 document.addEventListener('DOMContentLoaded', init);
 // ── Hero waveform ──────────────────────────────────────────────────
-// ── Hero waveform ──────────────────────────────────────────────────
 (function () {
   const canvas = document.getElementById('hero-canvas');
   const ctx    = canvas.getContext('2d');
@@ -1960,6 +1974,21 @@ function copySongLink(id) {
 
   setTimeout(() => toast.remove(), 2000);
 }
+  // ── copyAlbumLink ────────────────────────────────────────────────────
+  function copyAlbumLink(albumId) {
+  const url = `${window.location.origin}${window.location.pathname}?album=${albumId}`;
+  navigator.clipboard.writeText(url);
+  const toast = document.createElement("div");
+  toast.textContent = "Album link copied 🎵";
+  toast.style = `
+    position: fixed; bottom: 100px; right: 20px;
+    background: #8b5cf6; color: white;
+    padding: 10px 14px; border-radius: 10px;
+    z-index: 9999;
+  `;
+  document.body.appendChild(toast);
+  setTimeout(() => toast.remove(), 2000);
+}
   // ── Play counts ────────────────────────────────────────────────────
 function getPlays(id, base) {
   const stored = parseInt(localStorage.getItem('plays_' + id) || '0');
@@ -2076,8 +2105,12 @@ function openArtistProfile(name) {
       ${coverHTML}
       <div class="album-card-info">
         <div class="album-card-title">${esc(album.title)}</div>
-        <div class="album-card-sub">${album.trackIds.length} tracks • ${album.year}</div>
+        <div class="album-card-sub">${esc(album.artist)} • ${album.year}</div>
+        <div class="album-card-sub" style="margin-top:2px;">${album.trackIds.length} tracks</div>
         <span class="album-card-type">${esc(album.type)}</span>
+      </div>
+      <div style="padding: 0 12px 12px; display:flex; justify-content:flex-end;">
+        <button class="download-btn" onclick="event.stopPropagation(); copyAlbumLink('${esc(album.id)}')" title="Copy album link">🔗 Share</button>
       </div>
     `;
     albumsGrid.appendChild(card);
@@ -2132,11 +2165,15 @@ function renderAlbumGrid(containerId, albums) {
   });
 }
 
+let _openAlbumArtist = null;
+
 function openAlbumModal(albumId) {
   const album = ALBUMS.find(a => a.id === albumId);
   if (!album) return;
 
-  document.getElementById('album-modal-cover').src       = album.cover || '';
+  _openAlbumArtist = album.artist;
+
+  document.getElementById('album-modal-cover').src         = album.cover || '';
   document.getElementById('album-modal-title').textContent  = album.title;
   document.getElementById('album-modal-artist').textContent = album.artist;
   document.getElementById('album-modal-year').textContent   = album.year;
@@ -2153,8 +2190,13 @@ function openAlbumModal(albumId) {
 }
 
 function closeAlbumModal(e) {
-  if (e.target === document.getElementById('album-modal-overlay')) {
-    document.getElementById('album-modal-overlay').style.display = 'none';
+  if (e && e.target !== document.getElementById('album-modal-overlay')) return;
+  document.getElementById('album-modal-overlay').style.display = 'none';
+  if (_openAlbumArtist) {
+    showPage('artists');
+    setActiveNav(document.querySelectorAll('.nav-item')[3]);
+    setTimeout(() => openArtistProfile(_openAlbumArtist), 50);
+    _openAlbumArtist = null;
   }
 }
 
