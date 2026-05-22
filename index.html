@@ -64,7 +64,7 @@ fill='%238b5cf6'/>
       to   { opacity: 1; transform: translateY(0); }
     }
     a { color: inherit; text-decoration: none; }
-    button { cursor: pointer; border: none; background: none; font-family: inherit; }
+    button { cursor: pointer; border: none; background: none; font-family: inherit; -webkit-appearance: none; appearance: none; }
     img { display: block; }
     ::-webkit-scrollbar { width: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
@@ -665,7 +665,10 @@ fill='%238b5cf6'/>
 }
 @media (max-width: 700px) {
   .hero-wrap { height: 320px; }
-  .hero-now-playing { top: 14px; right: 14px; }
+  .hero-now-playing { top: 14px; right: 14px; max-width: 160px; }
+  .hero-now-playing-text { display: none; }
+  .hero-stars { display: none; }
+  .hero-grid { display: none; }
 }
 .card-plays {
   font-size: 10px; color: var(--text-muted);
@@ -730,6 +733,13 @@ fill='%238b5cf6'/>
   filter: blur(40px);
   opacity: 0;
   animation: orbFloat ease-in-out infinite;
+}
+@media (max-width: 700px) {
+  .orb { filter: blur(25px); }
+  .orb-1 { width: 220px; height: 220px; }
+  .orb-2 { width: 180px; height: 180px; }
+  .orb-3, .orb-4 { display: none; }
+  .orb-5 { width: 120px; height: 120px; }
 }
 
 .orb-1 {
@@ -922,6 +932,39 @@ fill='%238b5cf6'/>
 }
 .track-artist { font-size: 11px; color: var(--text-secondary); }
 .track-plays { font-size: 10px; color: var(--text-muted); flex-shrink: 0; }
+    .search-wrap { position: relative; }
+
+.search-suggestions {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+  background: var(--bg-modal);
+  border: 1px solid var(--border-accent);
+  border-radius: var(--radius);
+  overflow: hidden; z-index: 200;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  max-height: 320px; overflow-y: auto;
+}
+.search-suggestion-item {
+  display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; cursor: pointer;
+  transition: background 0.15s;
+  border-bottom: 1px solid var(--border);
+}
+.search-suggestion-item:last-child { border-bottom: none; }
+.search-suggestion-item:hover { background: var(--bg-elevated); }
+.suggestion-cover {
+  width: 36px; height: 36px; border-radius: 6px;
+  object-fit: cover; background: var(--bg-elevated); flex-shrink: 0;
+}
+.suggestion-info { flex: 1; overflow: hidden; }
+.suggestion-title {
+  font-size: 13px; font-weight: 600;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.suggestion-sub { font-size: 11px; color: var(--text-secondary); }
+.suggestion-type {
+  font-size: 10px; font-weight: 600; text-transform: uppercase;
+  color: var(--accent-soft); letter-spacing: 0.5px; flex-shrink: 0;
+}
   </style>
 </head>
 
@@ -1616,7 +1659,91 @@ function handleSearch(query) {
   currentSongs = q === '' ? [...SONGS]
     : SONGS.filter(s => s.title.toLowerCase().includes(q) || s.artist.toLowerCase().includes(q));
   renderGrid(currentSongs);
+  showSuggestions(query.trim());
 }
+
+function showSuggestions(query) {
+  removeSuggestions();
+  if (!query) return;
+  const q = query.toLowerCase();
+  const results = [];
+
+  SONGS.filter(s =>
+    s.title.toLowerCase().includes(q) || s.artist.toLowerCase().includes(q)
+  ).slice(0, 5).forEach(s => results.push({ type: 'song', song: s }));
+
+  Object.entries(ARTISTS).filter(([name]) =>
+    name.toLowerCase().includes(q)
+  ).slice(0, 3).forEach(([name, artist]) => {
+    if (!results.find(r => r.type === 'artist' && r.name === name))
+      results.push({ type: 'artist', name, artist });
+  });
+
+  if (!results.length) return;
+
+  const wrap = document.querySelector('.search-wrap');
+  const box  = document.createElement('div');
+  box.className = 'search-suggestions';
+  box.id = 'search-suggestions';
+
+  results.forEach(r => {
+    const item = document.createElement('div');
+    item.className = 'search-suggestion-item';
+
+    if (r.type === 'song') {
+      const coverHTML = r.song.cover
+        ? `<img class="suggestion-cover" src="${esc(r.song.cover)}" />`
+        : `<div class="suggestion-cover" style="display:flex;align-items:center;justify-content:center;font-size:16px;">${GENRE_EMOJI[r.song.genre]||'🎵'}</div>`;
+      item.innerHTML = `
+        ${coverHTML}
+        <div class="suggestion-info">
+          <div class="suggestion-title">${esc(r.song.title)}</div>
+          <div class="suggestion-sub">${esc(r.song.artist)}</div>
+        </div>
+        <span class="suggestion-type">Song</span>
+      `;
+      item.onclick = () => {
+        removeSuggestions();
+        document.getElementById('search-input').value = '';
+        currentSongs = [...SONGS];
+        const idx = currentSongs.findIndex(s => s.id === r.song.id);
+        showPage('home');
+        playFromGrid(idx);
+      };
+    } else {
+      const avatarHTML = r.artist.avatar
+        ? `<img class="suggestion-cover" src="${esc(r.artist.avatar)}" style="border-radius:50%;" />`
+        : `<div class="suggestion-cover" style="display:flex;align-items:center;justify-content:center;font-size:16px;border-radius:50%;">${r.artist.emoji}</div>`;
+      item.innerHTML = `
+        ${avatarHTML}
+        <div class="suggestion-info">
+          <div class="suggestion-title">${esc(r.name)}</div>
+          <div class="suggestion-sub">${esc(r.artist.genre)}</div>
+        </div>
+        <span class="suggestion-type">Artist</span>
+      `;
+      item.onclick = () => {
+        removeSuggestions();
+        document.getElementById('search-input').value = '';
+        showPage('artists');
+        setActiveNav(document.querySelectorAll('.nav-item')[3]);
+        setTimeout(() => openArtistProfile(r.name), 50);
+      };
+    }
+    box.appendChild(item);
+  });
+
+  wrap.appendChild(box);
+}
+
+function removeSuggestions() {
+  const el = document.getElementById('search-suggestions');
+  if (el) el.remove();
+}
+
+document.addEventListener('click', e => {
+  if (!e.target.closest('.search-wrap')) removeSuggestions();
+});
 
 /* ── Sidebar ───────────────────────────────────────────────────────── */
 function toggleSidebar() {
@@ -1668,105 +1795,109 @@ function esc(str) {
 
 document.addEventListener('DOMContentLoaded', init);
 // ── Hero waveform ──────────────────────────────────────────────────
+// ── Hero waveform ──────────────────────────────────────────────────
 (function () {
   const canvas = document.getElementById('hero-canvas');
   const ctx    = canvas.getContext('2d');
   let W, H, t = 0;
   let analyser = null, dataArray = null, audioCtx = null;
   let connected = false;
+  const isMobile = () => window.innerWidth <= 700;
 
   function resize() {
+    const dpr = isMobile() ? 1 : Math.min(devicePixelRatio, 2);
     W = canvas.offsetWidth;
     H = canvas.offsetHeight;
-    canvas.width  = W * devicePixelRatio;
-    canvas.height = H * devicePixelRatio;
-    ctx.scale(devicePixelRatio, devicePixelRatio);
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    ctx.scale(dpr, dpr);
   }
   window.addEventListener('resize', resize);
   resize();
 
-  // Idle: layered sine waves
   function drawIdle() {
     ctx.clearRect(0, 0, W, H);
-    const layers = [
-  { amp: 55, freq: 0.011, speed: 0.018, alpha: 0.55, color: '#8b5cf6' },
-  { amp: 35, freq: 0.018, speed: 0.026, alpha: 0.40, color: '#a78bfa' },
-  { amp: 70, freq: 0.007, speed: 0.010, alpha: 0.30, color: '#60a5fa' },
-  { amp: 25, freq: 0.026, speed: 0.034, alpha: 0.22, color: '#8b5cf6' },
-];
+    const layers = isMobile() ? [
+      { amp: 40, freq: 0.011, speed: 0.018, alpha: 0.50, color: '#8b5cf6' },
+      { amp: 55, freq: 0.007, speed: 0.010, alpha: 0.28, color: '#60a5fa' },
+    ] : [
+      { amp: 55, freq: 0.011, speed: 0.018, alpha: 0.55, color: '#8b5cf6' },
+      { amp: 35, freq: 0.018, speed: 0.026, alpha: 0.40, color: '#a78bfa' },
+      { amp: 70, freq: 0.007, speed: 0.010, alpha: 0.30, color: '#60a5fa' },
+      { amp: 25, freq: 0.026, speed: 0.034, alpha: 0.22, color: '#8b5cf6' },
+    ];
     layers.forEach(l => {
-  ctx.beginPath();
-  const yBase = H * 0.55;
-  for (let x = 0; x <= W; x += 2) {
-    const y = yBase
-      + Math.sin(x * l.freq + t * l.speed * 60) * l.amp
-      + Math.sin(x * l.freq * 0.5 + t * l.speed * 38) * (l.amp * 0.4);
-    x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
-  }
+      ctx.beginPath();
+      const yBase = H * 0.55;
+      const step = isMobile() ? 4 : 2;
+      for (let x = 0; x <= W; x += step) {
+        const y = yBase
+          + Math.sin(x * l.freq + t * l.speed * 60) * l.amp
+          + Math.sin(x * l.freq * 0.5 + t * l.speed * 38) * (l.amp * 0.4);
+        x === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+      }
       ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.closePath();
       ctx.fillStyle = l.color;
       ctx.globalAlpha = l.alpha;
       ctx.fill();
       ctx.globalAlpha = 1;
     });
-    // Glowing dots along the top wave
-    for (let i = 0; i < 7; i++) {
-      const px = (W / 8) * (i + 1);
-      const py = H * 0.55 + Math.sin(px * 0.011 + t * 0.018 * 60) * 55;
-      ctx.beginPath();
-      ctx.arc(px, py, 2.5, 0, Math.PI * 2);
-      ctx.fillStyle = '#a78bfa';
-      ctx.globalAlpha = 0.45 + 0.45 * Math.sin(t * 2.2 + i * 0.9);
-      ctx.fill();
-      ctx.globalAlpha = 1;
+    if (!isMobile()) {
+      for (let i = 0; i < 7; i++) {
+        const px = (W / 8) * (i + 1);
+        const py = H * 0.55 + Math.sin(px * 0.011 + t * 0.018 * 60) * 55;
+        ctx.beginPath();
+        ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#a78bfa';
+        ctx.globalAlpha = 0.45 + 0.45 * Math.sin(t * 2.2 + i * 0.9);
+        ctx.fill();
+        ctx.globalAlpha = 1;
+      }
     }
     t += 0.016;
   }
 
-  // Live: frequency bar visualiser
   function drawBars() {
     ctx.clearRect(0, 0, W, H);
     analyser.getByteFrequencyData(dataArray);
-    const isMobile = window.innerWidth <= 700;
-    const count = Math.min(dataArray.length, isMobile ? 48 : 128);
+    const count = Math.min(dataArray.length, isMobile() ? 48 : 128);
     const bw    = W / count;
     const yBase = H * 0.72;
     for (let i = 0; i < count; i++) {
       const v  = dataArray[i] / 255;
-      const bh = v * H * (isMobile ? 0.9 : 0.68);
+      const bh = v * H * 0.68;
       ctx.fillStyle = `hsla(${258 + v * 38}, 78%, 65%, ${0.25 + v * 0.75})`;
       ctx.beginPath();
-      ctx.roundRect(
-  i * bw + 1,
-  yBase - bh,
-  bw - (isMobile ? 1 : 2),
-  bh + (H - yBase),
-  isMobile ? 4 : 2
-);
+      ctx.roundRect(i * bw + 1, yBase - bh, bw - 2, bh + (H - yBase), 2);
       ctx.fill();
-      // soft reflection
-      ctx.fillStyle = `hsla(${258 + v * 38}, 78%, 65%, ${0.06 + v * 0.08})`;
-      ctx.beginPath();
-      ctx.roundRect(i * bw + 1, yBase, bw - 2, v * H * 0.12, 2);
-      ctx.fill();
+      if (!isMobile()) {
+        ctx.fillStyle = `hsla(${258 + v * 38}, 78%, 65%, ${0.06 + v * 0.08})`;
+        ctx.beginPath();
+        ctx.roundRect(i * bw + 1, yBase, bw - 2, v * H * 0.12, 2);
+        ctx.fill();
+      }
     }
   }
 
-  function loop() {
-    analyser && dataArray ? drawBars() : drawIdle();
+  let lastFrame = 0;
+  function loop(ts) {
+    const limit = isMobile() ? 33 : 0;
+    if (ts - lastFrame >= limit) {
+      lastFrame = ts;
+      analyser && dataArray ? drawBars() : drawIdle();
+    }
     requestAnimationFrame(loop);
   }
-  loop();
+  requestAnimationFrame(loop);
 
-  // Call this once on first play to wire up Web Audio
-  window.heroConnectAudio = function (audioEl) {
+  window.heroConnectAudio = function (el) {
     if (connected) { audioCtx?.resume(); return; }
     try {
       audioCtx  = new (window.AudioContext || window.webkitAudioContext)();
       analyser  = audioCtx.createAnalyser();
       analyser.fftSize = 256;
       dataArray = new Uint8Array(analyser.frequencyBinCount);
-      audioCtx.createMediaElementSource(audioEl).connect(analyser);
+      audioCtx.createMediaElementSource(el).connect(analyser);
       analyser.connect(audioCtx.destination);
       connected = true;
     } catch (e) { console.warn('Web Audio unavailable', e); }
@@ -1809,7 +1940,7 @@ function formatPlays(n) {
 (function () {
   const container = document.getElementById('hero-stars');
   if (!container) return;
-  const count = 55;
+  const count = window.innerWidth <= 700 ? 20 : 55;
   for (let i = 0; i < count; i++) {
     const s = document.createElement('div');
     s.className = 'star';
