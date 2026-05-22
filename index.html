@@ -1350,6 +1350,12 @@ const SONGS = [
   { id:24, title:"Follow", artist:"Quake STP", genre:"Afro Beat", src:"music/follow.mp3", cover:"images/lepresidente.jpg", download:"music/follow.mp3", basePlays: 0 },
   { id:25, title:"Thinking Bout You", artist:"Quake STP", genre:"Afro Beat", src:"music/thinking-bout-you.mp3", cover:"images/lepresidente.jpg", download:"music/thinking-bout-you.mp3", basePlays: 0 },
   { id:26, title:"Let Go", artist:"Quake STP", genre:"Afro Beat", src:"music/let-go.mp3", cover:"images/lepresidente.jpg", download:"music/let-go.mp3", basePlays: 0 },
+  {id:27, title:"TV Yankhongo", artist:"Raspergal", genre:"Hip-Hop/Rap", src:"music/tv-yankhongo.mp3", cover:"images/sneakylink.jpg", download:"music/tv-yankhongo.mp3"},
+  {id:28, title:"My Energy", artist:"Raspergal", genre:"Afro Fusion", src:"music/my-energy.mp3", cover:"images/sneakylink.jpg", download:"music/my-energy.mp3"},
+  {id:29, title:"Ka Lowkey", artist:"Raspergal", genre:"Hip-Hop/Rap", src:"music/ka-lowkey.mp3", cover:"images/sneakylink.jpg", download:"music/ka-lowkey.mp3"},
+  {id:30, title:"Mwano", artist:"Raspergal", genre:"Afro Fusion", src:"music/mwano.mp3", cover:"images/sneakylink.jpg", download:"music/mwano.mp3"},
+  {id:31, title:"For You", artist:"Raspergal", genre:"Afro Fusion", src:"music/for-you.mp3", cover:"images/sneakylink.jpg", download:"music/for-you.mp3"},
+  {id:32, title:"Sneakin and Hide", artist:"Raspergal", genre:"Drill", src:"music/sneakin-and-hide.mp3", cover:"imagessneakylink.jpg", download:"music/sneakin-and-hide.mp3"},
   { id:11,  title:"Amazing Grace",   artist:"Skyface",     genre:"Trap", src:"music/Amazing Grace.mpeg",   cover:"images/amazinggrace.jpg", download:"music/Amazing Grace.mpeg", basePlays: 24 },
   { id:6,  title:"Mirror",  artist:"Bubblegum RBG",   genre:"Trap",        src:"music/mirror.mp3",   cover:"images/mirror.jpg", download:"music/mirror.mp3", basePlays: 375 },
   { id:7,  title:"Lottery",     artist:"Bubblegum RBG",  genre:"Trap",       src:"music/lottery.mp3",   cover:"images/lottery.jpg", download:"music/lottery.mp3", basePlays: 44 },
@@ -1374,21 +1380,21 @@ const ARTISTS = {
   "Quake STP": {
     genre: "Trap/Afro Beat", emoji: "🎸",
     avatar: "images/artist1.jpg",
-    bio: "Quake STP is a hard-hitting trap artist from Malawi known for raw energy and cinematic beats.",
+    bio: "",
     albums: ["Le Presidente"],
     singles: [1]  // song IDs that are singles
   },
   "Skyface": {
     genre: "Trap/Afro Beat", emoji: "🎵",
     avatar: "images/skyface.jpg",
-    bio: "Skyface brings soulful melodies over trap production, blending faith and street realism.",
+    bio: "",
     albums: [],
     singles: [11]
   },
   "S Unco": {
     genre: "Afro Beat/Trap", emoji: "🎤",
     avatar: "",
-    bio: "S Unco fuses Afrobeats with local Malawian flavor, creating infectious grooves that move any crowd.",
+    bio: "",
     albums: [],
     singles: [2]
   },
@@ -1402,10 +1408,17 @@ const ARTISTS = {
   "KIID thxhomeboi": {
     genre: "Trap", emoji: "🎹",
     avatar: "images/kiidef.jpg",
-    bio: "KIID thxhomeboi delivers smooth trap flows with introspective lyricism.",
+    bio: "",
     albums: [],
     singles: [4]
-  }
+  },
+  "Raspergal": {
+  genre:"Hip-Hop/Rap/Afro",
+  avatar:"images/raspergal.jpg",
+  bio:"Just good Music 🎶 take your time and give it an ear 👂",
+  albums: ["A LETTER TO MY SNEAKY LINK"],
+  singles: []
+}
 };
 
 // ── Album data ──────────────────────────────────────────────────────
@@ -1440,6 +1453,16 @@ const ALBUMS = [
   type: "EP",
   trending: true,
   trackIds: [23, 24, 25, 26]
+  },
+  {
+  id: "a-letter-to-my-sneaky-link",
+  title: "A LETTER TO MY SNEAKY LINK",
+  artist: "Raspergal",
+  cover: "images/sneakylink.jpg",
+  year: "2025",
+  type: "EP",
+  trending: true,
+  trackIds: [27, 28, 29, 30, 31, 32]
 }
   // Add more albums here following the same structure
 ];
