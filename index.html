@@ -1572,7 +1572,7 @@ onclick="if(currentIndex>=0){ const n=SONGS[currentIndex]?.artist; showPage('art
 </div>
 </div>
 
-<audio id="audio-player" preload="metadata"></audio>
+<audio id="audio-player" preload="auto"></audio>
 
 <script>
 /* ── Song data ─────────────────────────────────────────────────────── */
@@ -1713,6 +1713,19 @@ const audioEl = document.getElementById('audio-player');
 /* ── Init ──────────────────────────────────────────────────────────── */
 function init() {
 currentSongs = [...SONGS];
+     async function init() {
+  currentSongs = [...SONGS];
+
+  // Load play counts from API
+  await Promise.all(SONGS.map(async song => {
+    try {
+      const res = await fetch(`${COUNT_BASE}/get/reesewave-song-${song.id}`);
+      const data = await res.json();
+      song._plays = (song.basePlays || 0) + (parseInt(data.value) || 0);
+    } catch(e) {
+      song._plays = song.basePlays || 0;
+    }
+  }));
 renderGrid(currentSongs);
 renderHomeArtists();
 renderHomeAlbums();
@@ -1826,7 +1839,6 @@ currentIndex = globalIndex;
 incrementPlays(song.id); 
 renderGrid(currentSongs);
 audioEl.src = song.src;
-audioEl.load();
 audioEl.play().then(() => {
 if (window.heroConnectAudio) heroConnectAudio(audioEl);
 }).catch(err => console.warn('Playback blocked:', err));
@@ -2226,21 +2238,26 @@ document.body.appendChild(toast);
 setTimeout(() => toast.remove(), 2000);
 }
 // ── Play counts ────────────────────────────────────────────────────
+const COUNT_BASE = 'https://countapi.mileshilliard.com/api/v1';
+
 function getPlays(id, base) {
-const stored = parseInt(localStorage.getItem('plays_' + id) || '0');
-return base + stored;
+  const song = SONGS.find(s => s.id === id);
+  return song?._plays ?? (base || 0);
 }
 
-function incrementPlays(id) {
-const key = 'plays_' + id;
-const current = parseInt(localStorage.getItem(key) || '0');
-localStorage.setItem(key, current + 1);
+async function incrementPlays(id) {
+  const song = SONGS.find(s => s.id === id);
+  if (song) song._plays = (song._plays || 0) + 1;
+  try {
+    await fetch(`${COUNT_BASE}/hit/reesewave-song-${id}`);
+  } catch(e) {}
 }
 
 function formatPlays(n) {
-if (n >= 1000000) return (n / 1000000).toFixed(1).replace(/\.0$/, '') + 'M plays';
-if (n >= 1000)    return (n / 1000).toFixed(1).replace(/\.0$/, '') + 'K plays';
-return n + ' plays';
+  if (!n) return '0 plays';
+  if (n >= 1000000) return (n/1000000).toFixed(1).replace(/\.0$/,'') + 'M plays';
+  if (n >= 1000)    return (n/1000).toFixed(1).replace(/\.0$/,'') + 'K plays';
+  return n + ' plays';
 }
 // ── Hero stars ─────────────────────────────────────────────────────
 (function () {
