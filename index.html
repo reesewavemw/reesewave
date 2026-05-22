@@ -965,6 +965,27 @@ fill='%238b5cf6'/>
   font-size: 10px; font-weight: 600; text-transform: uppercase;
   color: var(--accent-soft); letter-spacing: 0.5px; flex-shrink: 0;
 }
+    button,
+.card-play-btn,
+#player-playpause,
+.player-skip-btn {
+  -webkit-tap-highlight-color: transparent;
+  tap-highlight-color: transparent;
+  outline: none;
+}
+
+button:focus,
+button:active,
+.card-play-btn:focus,
+.card-play-btn:active,
+#player-playpause:focus,
+#player-playpause:active {
+  background: var(--accent);
+  outline: none;
+}
+    #player-playpause {
+  background: var(--accent) !important;
+}
   </style>
 </head>
 
@@ -1019,16 +1040,13 @@ ReeseWave is still in active development. Some features are incomplete or evolvi
 
     <span class="nav-section-title">Discover</span>
 <div class="nav-item" onclick="setActiveNav(this); showPage('artists'); closeSidebar()">
-  <span class="icon">👤</span> Artists
+  <span class="icon">◈</span> Artists
 </div>
 <div class="nav-item" onclick="setActiveNav(this); showPage('albums'); closeSidebar()">
-  <span class="icon">💿</span> Albums
+  <span class="icon">◎</span> Albums
 </div>
 <div class="nav-item" onclick="setActiveNav(this); showPage('home'); setTimeout(scrollToMusic, 50); closeSidebar()">
   <span class="icon">♪</span> Trending
-</div>
-<div class="nav-item" onclick="setActiveNav(this); closeSidebar()">
-  <span class="icon">↓</span> Downloads
 </div>
     <span class="nav-section-title">Beta Release • <br> ReeseWave 2026</span>
   </aside>
