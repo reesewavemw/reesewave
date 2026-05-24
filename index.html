@@ -1578,38 +1578,79 @@ onclick="if(currentIndex>=0){ const n=SONGS[currentIndex]?.artist; showPage('art
 <script>
 /* ── Song data ─────────────────────────────────────────────────────── */
 const SONGS = [
-{ id:1,  title:"Trauma",       artist:"Quake STP",   genre:"Trap", src:"music/Trauma.mp3",  cover:"images/cover1.jpeg", download:"music/Trauma.mp3", basePlays: 54 },
-{ id:2,  title:"Gumba Gumba",  artist:"S Unco",   genre:"Afro Beat", src:"music/GumbaGumba.mp3",   cover:"images/GumbaGumba.jpg", download:"music/GumbaGumba.mp3", basePlays: 36 },
-{ id:3,  title:"Wamva", artist:"Bubblegum RBG", genre:"Trap",  src:"music/Wamva.mp3",   cover:"images/Wamvaart.jpg", download:"music/Wamva.mp3", basePlays: 99 },
-{ id:4,  title:"Smart Kniggah", artist:"KIID thxhomeboi",  genre:"Trap",       src:"music/smartkniggah.mp3",   cover:"images/smartknigga.jpg", download:"music/smartkniggah.mp3", basePlays: 56 },
-{ id:5,  title:"N'goma",   artist:"Bubblegum RBG",     genre:"Drill", src:"music/N’GOMA.mp3",   cover:"images/Ng'oma (1).jpg", download:"music/N’GOMA.mp3", basePlays: 159 },
-{ id:23, title:"Choose", artist:"Quake STP", genre:"Afro Beat", src:"music/choose.mp3", cover:"images/lepresidente.jpg", download:"music/choose.mp3", basePlays: 38 },
-{ id:24, title:"Follow", artist:"Quake STP", genre:"Afro Beat", src:"music/follow.mp3", cover:"images/lepresidente.jpg", download:"music/follow.mp3", basePlays: 41 },
-{ id:25, title:"Thinking Bout You", artist:"Quake STP", genre:"Afro Beat", src:"music/thinking-bout-you.mp3", cover:"images/lepresidente.jpg", download:"music/thinking-bout-you.mp3", basePlays: 78 },
-{ id:26, title:"Let Go", artist:"Quake STP", genre:"Afro Beat", src:"music/let-go.mp3", cover:"images/lepresidente.jpg", download:"music/let-go.mp3", basePlays: 79 },
-{id:27, title:"TV Yankhongo", artist:"Raspergal", genre:"Hip-Hop/Rap", src:"music/tv-yankhongo.mp3", cover:"images/sneakylink.jpg", download:"music/tv-yankhongo.mp3", basePlays: 24},
-{id:28, title:"My Energy", artist:"Raspergal", genre:"Afro Fusion", src:"music/my-energy.mp3", cover:"images/sneakylink.jpg", download:"music/my-energy.mp3", basePlays: 54},
-{id:29, title:"Ka Lowkey", artist:"Raspergal", genre:"Hip-Hop/Rap", src:"music/ka-lowkey.mp3", cover:"images/sneakylink.jpg", download:"music/ka-lowkey.mp3", basePlays: 33},
-{id:30, title:"Mwano", artist:"Raspergal", genre:"Afro Fusion", src:"music/mwano.mp3", cover:"images/sneakylink.jpg", download:"music/mwano.mp3", basePlays: 47},
-{id:31, title:"For You", artist:"Raspergal", genre:"Afro Fusion", src:"music/for-you.mp3", cover:"images/sneakylink.jpg", download:"music/for-you.mp3", basePlays: 15},
-{id:32, title:"Sneakin and Hide", artist:"Raspergal", genre:"Drill", src:"music/sneakin-and-hide.mp3", cover:"images/sneakylink.jpg", download:"music/sneakin-and-hide.mp3", basePlays: 25},
-{ id:11,  title:"Amazing Grace",   artist:"Skyface",     genre:"Trap", src:"music/Amazing Grace.mpeg",   cover:"images/amazinggrace.jpg", download:"music/Amazing Grace.mpeg", basePlays: 24 },
-{ id:6,  title:"Mirror",  artist:"Bubblegum RBG",   genre:"Trap",        src:"music/mirror.mp3",   cover:"images/mirror.jpg", download:"music/mirror.mp3", basePlays: 375 },
-{ id:7,  title:"Lottery",     artist:"Bubblegum RBG",  genre:"Trap",       src:"music/lottery.mp3",   cover:"images/lottery.jpg", download:"music/lottery.mp3", basePlays: 44 },
-{ id:8,  title:"Bread",    artist:"Bubblegum RBG",     genre:"Trap", src:"music/Bread.mp3",   cover:"images/wow.jpg", download:"music/Bread.mp3", basePlays: 124 },
-{ id:9,  title:"Idya Phazi",  artist:"Bubblegum RBG", genre:"Trap",  src:"music/Idya Phazi.mp3",   cover:"images/bubblegum.jpg", download:"music/Idya Phazi.mp3", basePlays: 431 },
-{ id:10, title:"Desire",   artist:"Bubblegum RBG",  genre:"Afrobeat",       src:"music/Desire.mp3",  cover:"images/Desire.jpg", download:"music/Desire.mp3", basePlays: 98 },
-{ id:17, title:"No Mistake",   artist:"S Unco",  genre:"Trap",       src:"music/no-mistake.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/no-mistake.mp3", basePlays: 43 },
-{ id:18, title:"Talk Pop",   artist:"S Unco",  genre:"Pop",       src:"music/talk-now.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/talk-now.mp3", basePlays: 101 },
-{ id:19, title:"Regrow",   artist:"S Unco",  genre:"Rap/ Hip Hop",       src:"music/regrow.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/regrow.mp3", basePlays: 86 },
-{ id:20, title:"Somebody's daughter",   artist:"S Unco",  genre:"Trap",       src:"music/somebodys-daughter.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/somebodys-daughter.mp3", basePlays: 86 },
-{ id:21, title:"Gone",   artist:"S Unco",  genre:"Trap",       src:"music/gone.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/gone.mp3", basePlays: 66 },
-{ id:22, title:"Chrome Hearts",   artist:"S Unco",  genre:"Afro Beat",       src:"music/Chrome-hearts.mp3",  cover:"images/echoesofunicorn.jpg", download:"music/Chrome-hearts.mp3", basePlays: 75 },
-{ id:12, title:"Bad Guy",   artist:"Bubblegum RBG",  genre:"Afrobeat",       src:"music/bad-guy.mp3",  cover:"images/RBGcompilation.jpg", download:"music/bad-guy.mp3", basePlays: 60 },
-{ id:13, title:"Dance",   artist:"Bubblegum RBG",  genre:"Afrobeat",       src:"music/dance.mp3",  cover:"images/RBGcompilation.jpg", download:"music/dance.mp3", basePlays: 48 },
-{ id:14, title:"Loud",   artist:"Bubblegum RBG",  genre:"Trap",       src:"music/loud.mp3",  cover:"images/RBGcompilation.jpg", download:"music/loud.mp3", basePlays: 50 },
-{ id:15, title:"Paranoid",   artist:"Bubblegum RBG",  genre:"Drill",       src:"music/paranoid.mp3",  cover:"images/RBGcompilation.jpg", download:"music/paranoid.mp3", basePlays: 43 },
-{ id:16, title:"Time",   artist:"Bubblegum RBG",  genre:"Trap",       src:"music/time.mp3",  cover:"images/RBGcompilation.jpg", download:"music/time.mp3", basePlays: 59 }
+{ id:1,  title:"Trauma",       artist:"Quake STP",   genre:"Trap", src:"music/Trauma.mp3",  cover:"images/cover1.jpeg", download:"music/Trauma.mp3", basePlays: 82 },
+
+{ id:2,  title:"Gumba Gumba",  artist:"S Unco",   genre:"Afro Beat", src:"music/GumbaGumba.mp3",   cover:"images/GumbaGumba.jpg", download:"music/GumbaGumba.mp3", basePlays: 64 },
+
+{ id:3,  title:"Wamva", artist:"Bubblegum RBG", genre:"Trap",  src:"music/Wamva.mp3",   cover:"images/Wamvaart.jpg", download:"music/Wamva.mp3", basePlays: 143 },
+
+{ id:4,  title:"Smart Kniggah", artist:"KIID thxhomeboi",  genre:"Trap", src:"music/smartkniggah.mp3", cover:"images/smartknigga.jpg", download:"music/smartkniggah.mp3", basePlays: 71 },
+
+{ id:5,  title:"N'goma", artist:"Bubblegum RBG", genre:"Drill", src:"music/N’GOMA.mp3", cover:"images/Ng'oma (1).jpg", download:"music/N’GOMA.mp3", basePlays: 201 },
+
+{ id:23, title:"Choose", artist:"Quake STP", genre:"Afro Beat", src:"music/choose.mp3", cover:"images/lepresidente.jpg", download:"music/choose.mp3", basePlays: 77 },
+
+{ id:24, title:"Follow", artist:"Quake STP", genre:"Afro Beat", src:"music/follow.mp3", cover:"images/lepresidente.jpg", download:"music/follow.mp3", basePlays: 85 },
+
+{ id:25, title:"Thinking Bout You", artist:"Quake STP", genre:"Afro Beat", src:"music/thinking-bout-you.mp3", cover:"images/lepresidente.jpg", download:"music/thinking-bout-you.mp3", basePlays: 124 },
+
+{ id:26, title:"Let Go", artist:"Quake STP", genre:"Afro Beat", src:"music/let-go.mp3", cover:"images/lepresidente.jpg", download:"music/let-go.mp3", basePlays: 131 },
+
+{id:27, title:"TV Yankhongo", artist:"Raspergal", genre:"Hip-Hop/Rap", src:"music/tv-yankhongo.mp3", cover:"images/sneakylink.jpg", download:"music/tv-yankhongo.mp3", basePlays: 52},
+
+{id:28, title:"My Energy", artist:"Raspergal", genre:"Afro Fusion", src:"music/my-energy.mp3", cover:"images/sneakylink.jpg", download:"music/my-energy.mp3", basePlays: 89},
+
+{id:29, title:"Ka Lowkey", artist:"Raspergal", genre:"Hip-Hop/Rap", src:"music/ka-lowkey.mp3", cover:"images/sneakylink.jpg", download:"music/ka-lowkey.mp3", basePlays: 67},
+
+{id:30, title:"Mwano", artist:"Raspergal", genre:"Afro Fusion", src:"music/mwano.mp3", cover:"images/sneakylink.jpg", download:"music/mwano.mp3", basePlays: 81},
+
+     { id:33, title:"Gulu Gululu", artist:"Teearsh", genre:"Trap", src:"music/Teearsh-Gulu-Gululu.mp3", cover:"images/penya.jpg", download:"music/Teearsh-Gulu-Gululu.mp3", basePlays: 36 },
+
+{ id:34, title:"Misozi", artist:"Teearsh", genre:"Trap", src:"music/Teearsh-misozi.mp3", cover:"images/penya.jpg", download:"music/Teearsh-misozi.mp3", basePlays: 49 },
+
+{ id:35, title:"Ona", artist:"Teearsh", genre:"Trap", src:"music/Teearsh-Ona.mp3", cover:"images/penya.jpg", download:"music/Teearsh-Ona.mp3", basePlays: 58 },
+
+{ id:36, title:"Pang'ono pang'ono", artist:"Teearsh", genre:"Trap", src:"music/Teearsh-Pangono-pangono.mp3", cover:"images/penya.jpg", download:"music/Teearsh-Pangono-pangono.mp3", basePlays: 44 },
+
+{ id:37, title:"Wamisala", artist:"Teearsh", genre:"Trap", src:"music/Teearsh-wamisala.mp3", cover:"images/penya.jpg", download:"music/Teearsh-wamisala.mp3", basePlays: 61 },
+
+{id:31, title:"For You", artist:"Raspergal", genre:"Afro Fusion", src:"music/for-you.mp3", cover:"images/sneakylink.jpg", download:"music/for-you.mp3", basePlays: 41},
+
+{id:32, title:"Sneakin and Hide", artist:"Raspergal", genre:"Drill", src:"music/sneakin-and-hide.mp3", cover:"images/sneakylink.jpg", download:"music/sneakin-and-hide.mp3", basePlays: 58},
+
+{ id:11, title:"Amazing Grace", artist:"Skyface", genre:"Trap", src:"music/Amazing Grace.mpeg", cover:"images/amazinggrace.jpg", download:"music/Amazing Grace.mpeg", basePlays: 49 },
+
+{ id:6, title:"Mirror", artist:"Bubblegum RBG", genre:"Trap", src:"music/mirror.mp3", cover:"images/mirror.jpg", download:"music/mirror.mp3", basePlays: 392 },
+
+{ id:7, title:"Lottery", artist:"Bubblegum RBG", genre:"Trap", src:"music/lottery.mp3", cover:"images/lottery.jpg", download:"music/lottery.mp3", basePlays: 73 },
+
+{ id:8, title:"Bread", artist:"Bubblegum RBG", genre:"Trap", src:"music/Bread.mp3", cover:"images/wow.jpg", download:"music/Bread.mp3", basePlays: 167 },
+
+{ id:9, title:"Idya Phazi", artist:"Bubblegum RBG", genre:"Trap", src:"music/Idya Phazi.mp3", cover:"images/bubblegum.jpg", download:"music/Idya Phazi.mp3", basePlays: 447 },
+
+{ id:10, title:"Desire", artist:"Bubblegum RBG", genre:"Afrobeat", src:"music/Desire.mp3", cover:"images/Desire.jpg", download:"music/Desire.mp3", basePlays: 121 },
+
+{ id:17, title:"No Mistake", artist:"S Unco", genre:"Trap", src:"music/no-mistake.mp3", cover:"images/echoesofunicorn.jpg", download:"music/no-mistake.mp3", basePlays: 74 },
+
+{ id:18, title:"Talk Pop", artist:"S Unco", genre:"Pop", src:"music/talk-now.mp3", cover:"images/echoesofunicorn.jpg", download:"music/talk-now.mp3", basePlays: 132 },
+
+{ id:19, title:"Regrow", artist:"S Unco", genre:"Rap/ Hip Hop", src:"music/regrow.mp3", cover:"images/echoesofunicorn.jpg", download:"music/regrow.mp3", basePlays: 113 },
+
+{ id:20, title:"Somebody's daughter", artist:"S Unco", genre:"Trap", src:"music/somebodys-daughter.mp3", cover:"images/echoesofunicorn.jpg", download:"music/somebodys-daughter.mp3", basePlays: 108 },
+
+{ id:21, title:"Gone", artist:"S Unco", genre:"Trap", src:"music/gone.mp3", cover:"images/echoesofunicorn.jpg", download:"music/gone.mp3", basePlays: 91 },
+
+{ id:22, title:"Chrome Hearts", artist:"S Unco", genre:"Afro Beat", src:"music/Chrome-hearts.mp3", cover:"images/echoesofunicorn.jpg", download:"music/Chrome-hearts.mp3", basePlays: 98 },
+
+{ id:12, title:"Bad Guy", artist:"Bubblegum RBG", genre:"Afrobeat", src:"music/bad-guy.mp3", cover:"images/RBGcompilation.jpg", download:"music/bad-guy.mp3", basePlays: 84 },
+
+{ id:13, title:"Dance", artist:"Bubblegum RBG", genre:"Afrobeat", src:"music/dance.mp3", cover:"images/RBGcompilation.jpg", download:"music/dance.mp3", basePlays: 69 },
+
+{ id:14, title:"Loud", artist:"Bubblegum RBG", genre:"Trap", src:"music/loud.mp3", cover:"images/RBGcompilation.jpg", download:"music/loud.mp3", basePlays: 71 },
+
+{ id:15, title:"Paranoid", artist:"Bubblegum RBG", genre:"Drill", src:"music/paranoid.mp3", cover:"images/RBGcompilation.jpg", download:"music/paranoid.mp3", basePlays: 63 },
+
+{ id:16, title:"Time", artist:"Bubblegum RBG", genre:"Trap", src:"music/time.mp3", cover:"images/RBGcompilation.jpg", download:"music/time.mp3", basePlays: 88 }
 ];
 
 /* ── Artist data ───────────────────────────────────────────────────── */
@@ -1635,6 +1676,14 @@ bio: "",
 albums: [],
 singles: [2]
 },
+"Teearsh": {
+genre: "Trap",
+emoji: "🎤",
+avatar: "images/penya.jpg",
+bio: "",
+albums: ["Penya"],
+singles: []
+},     
 "Bubblegum RBG": {
 genre: "Trap", emoji: "🥁",
 avatar: "images/rbg.jpg",
@@ -1690,6 +1739,16 @@ year: "2025",
 type: "EP",
 trending: true,
 trackIds: [23, 24, 25, 26]
+},
+{
+id: "penya",
+title: "Penya",
+artist: "Teearsh",
+cover: "images/penya.jpg",
+year: "2025",
+type: "EP",
+trending: true,
+trackIds: [33, 34, 35, 36, 37]
 },
 {
 id: "a-letter-to-my-sneaky-link",
