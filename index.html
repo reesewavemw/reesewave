@@ -1222,6 +1222,10 @@ outline: none;
 #player-playpause {
 background: var(--accent) !important;
 }
+.card-actions{
+     gap: 10px;
+}
+          
 </style>
 </head>
 
@@ -1902,10 +1906,10 @@ card.innerHTML = `
      </div>
      <div class="card-actions">
   <button class="download-btn" onclick="event.stopPropagation(); downloadWithMeta(currentSongs[${i}])" title="Download">
-    Download
+   💾 Download
   </button>
   <button class="download-btn" onclick="event.stopPropagation(); copySongLink(${song.id})" title="Copy Link">
-    🔗
+   🔗 Copy Link
   </button>
 </div>
    `;
