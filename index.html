@@ -2573,7 +2573,7 @@ function buildTrackRow(song, num) {
     <div class="track-plays">${formatPlays(getPlays(song.id, song.basePlays || 0))}</div>
     <button class="download-btn" style="margin-left:8px; flex-shrink:0;"
       onclick="event.stopPropagation(); downloadWithMeta(SONGS.find(s=>s.id===${song.id}))"
-      title="Download track">⬇</button>
+      title="Download track">Download</button>
   `;
 
   row.onclick = () => {
