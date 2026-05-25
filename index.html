@@ -2640,6 +2640,7 @@ card.innerHTML = `
        <div class="album-card-sub">${esc(album.artist)} • ${album.year}</div>
        <span class="album-card-type">${esc(album.type)}</span>
      </div>
+     <br>
      <div style="padding: 4px 12px 12px; display:flex; justify-content:flex-end; gap:6px;">
   <button class="download-btn" onclick="event.stopPropagation(); downloadAlbum('${esc(album.id)}')" title="Download album">⬇ Download</button>
   <button class="download-btn" onclick="event.stopPropagation(); copyAlbumLink('${esc(album.id)}')" title="Copy link">🔗</button>
@@ -2660,103 +2661,34 @@ async function downloadWithMeta(song) {
     return t;
   };
 
-  const toast = showToast('⬇ Preparing download...', 10000);
+  const toast = showToast('⬇ Downloading...', 10000);
 
   try {
-    const audioRes = await fetch(song.download);
-    if (!audioRes.ok) throw new Error('Audio fetch failed: ' + audioRes.status);
-    const audioBuffer = await audioRes.arrayBuffer();
-
-    let coverBuffer = null;
-    if (song.cover) {
-      try {
-        const coverRes = await fetch(song.cover);
-        if (coverRes.ok) coverBuffer = await coverRes.arrayBuffer();
-      } catch (e) { /* cover fetch failed, skip it */ }
-    }
-
-    const frames = [];
-
-    function makeTextFrame(id, text) {
-      const encoded = new TextEncoder().encode('\x00' + text);
-      const header = new Uint8Array(10);
-      header.set(new TextEncoder().encode(id), 0);
-      const size = encoded.length;
-      header[4] = (size >> 21) & 0x7f;
-      header[5] = (size >> 14) & 0x7f;
-      header[6] = (size >> 7)  & 0x7f;
-      header[7] = size & 0x7f;
-      return [...header, ...encoded];
-    }
-
-    frames.push(...makeTextFrame('TIT2', song.title));
-    frames.push(...makeTextFrame('TPE1', song.artist));
-    frames.push(...makeTextFrame('TCON', song.genre));
-
-    if (coverBuffer) {
-      const mime       = new TextEncoder().encode('image/jpeg\x00');
-      const encoding   = new Uint8Array([0x00]);
-      const picType    = new Uint8Array([0x03]);
-      const desc       = new Uint8Array([0x00]);
-      const coverData  = new Uint8Array(coverBuffer);
-      const apicData   = new Uint8Array(
-        encoding.length + mime.length + picType.length + desc.length + coverData.length
-      );
-      let off = 0;
-      apicData.set(encoding, off); off += encoding.length;
-      apicData.set(mime, off);     off += mime.length;
-      apicData.set(picType, off);  off += picType.length;
-      apicData.set(desc, off);     off += desc.length;
-      apicData.set(coverData, off);
-
-      const apicHeader = new Uint8Array(10);
-      apicHeader.set(new TextEncoder().encode('APIC'), 0);
-      const sz = apicData.length;
-      apicHeader[4] = (sz >> 21) & 0x7f;
-      apicHeader[5] = (sz >> 14) & 0x7f;
-      apicHeader[6] = (sz >> 7)  & 0x7f;
-      apicHeader[7] = sz & 0x7f;
-      frames.push(...apicHeader, ...apicData);
-    }
-
-    const framesArray  = new Uint8Array(frames);
-    const id3Header    = new Uint8Array(10);
-    id3Header[0] = 0x49; id3Header[1] = 0x44; id3Header[2] = 0x33;
-    id3Header[3] = 0x03; id3Header[4] = 0x00; id3Header[5] = 0x00;
-    const tagSize = framesArray.length;
-    id3Header[6] = (tagSize >> 21) & 0x7f;
-    id3Header[7] = (tagSize >> 14) & 0x7f;
-    id3Header[8] = (tagSize >> 7)  & 0x7f;
-    id3Header[9] = tagSize & 0x7f;
-
-    const final = new Uint8Array(id3Header.length + framesArray.length + audioBuffer.byteLength);
-    final.set(id3Header, 0);
-    final.set(framesArray, id3Header.length);
-    final.set(new Uint8Array(audioBuffer), id3Header.length + framesArray.length);
-
-    const blob = new Blob([final], { type: 'audio/mpeg' });
+    const res = await fetch(song.download);
+    if (!res.ok) throw new Error('Fetch failed: ' + res.status);
+    const blob = await res.blob();
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
-    a.href = url; a.download = `${song.artist} - ${song.title}.mp3`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-
-    toast.remove();
-    showToast('✅ Downloaded!');
-
-  } catch (e) {
-    console.error('downloadWithMeta error:', e);
-    toast.remove();
-    // Fallback: plain download link (no ID3 tags, but works on any server)
-    showToast('⚠️ Trying basic download...');
-    const a = document.createElement('a');
-    a.href = song.download;
+    a.href     = url;
     a.download = `${song.artist} - ${song.title}.mp3`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast.remove();
+    showToast('✅ Downloaded!');
+
+  } catch (e) {
+    console.error('Download error:', e);
+    toast.remove();
+    // Fallback
+    const a    = document.createElement('a');
+    a.href     = song.download;
+    a.download = `${song.artist} - ${song.title}.mp3`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    showToast('⬇ Download started!');
   }
 }
 
