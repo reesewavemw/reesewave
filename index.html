@@ -2498,8 +2498,8 @@ card.innerHTML = `
        <div class="album-card-sub">${esc(album.artist)} • ${album.year}</div>
        <div class="album-card-sub" style="margin-top:2px;">${album.trackIds.length} tracks</div>
        <span class="album-card-type">${esc(album.type)}</span>
+       <div style="margin-top: 2px; padding: 0 12px 12px; display:flex; justify-content:flex-end; gap:6px;">
        <br>
-       <div style="padding: 0 12px 12px; display:flex; justify-content:flex-end; gap:6px;">
   <button class="download-btn" onclick="event.stopPropagation(); downloadAlbum('${esc(album.id)}')" title="Download album">⬇ Download</button>
   <button class="download-btn" onclick="event.stopPropagation(); copyAlbumLink('${esc(album.id)}')" title="Copy album link">🔗 Share</button>
 </div>
