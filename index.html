@@ -1901,15 +1901,12 @@ card.innerHTML = `
        <div class="card-plays">${formatPlays(getPlays(song.id, song.basePlays || 0))}</div>
      </div>
      <div class="card-actions">
- <a class="download-btn" href="${esc(song.download)}" download="${esc(song.title)}"
-    onclick="event.stopPropagation()" title="Download">
-   ⬇ Download
- </a>
-
- <button class="download-btn" onclick="event.stopPropagation(); copySongLink(${song.id})"
-    title="Copy Link">
-   🔗
- </button>
+  <button class="download-btn" onclick="event.stopPropagation(); downloadWithMeta(currentSongs[${i}])" title="Download">
+    ⬇ Download
+  </button>
+  <button class="download-btn" onclick="event.stopPropagation(); copySongLink(${song.id})" title="Copy Link">
+    🔗
+  </button>
 </div>
    `;
 card.addEventListener('click', () => playFromGrid(i));
@@ -2502,8 +2499,9 @@ card.innerHTML = `
        <div class="album-card-sub" style="margin-top:2px;">${album.trackIds.length} tracks</div>
        <span class="album-card-type">${esc(album.type)}</span>
        <br>
-       <div style="padding: 0 12px 12px; display:flex; justify-content:flex-end;">
-         <button class="download-btn" onclick="event.stopPropagation(); copyAlbumLink('${esc(album.id)}')" title="Copy album link">🔗 Share</button>
+       <div style="padding: 0 12px 12px; display:flex; justify-content:flex-end; gap:6px;">
+  <button class="download-btn" onclick="event.stopPropagation(); downloadAlbum('${esc(album.id)}')" title="Download album">⬇ Download</button>
+  <button class="download-btn" onclick="event.stopPropagation(); copyAlbumLink('${esc(album.id)}')" title="Copy album link">🔗 Share</button>
 </div>
      </div>
      </div>
@@ -2527,7 +2525,16 @@ document.getElementById('album-modal-year').textContent   = album.year;
 document.getElementById('album-modal-type').textContent   = album.type;
 
 const trackList = document.getElementById('album-modal-tracks');
-trackList.innerHTML = '';
+trackList.innerHTML = `
+  <button onclick="downloadAlbum('${albumId}')" style="
+    width:100%; display:flex; align-items:center; justify-content:center; gap:8px;
+    background:var(--accent); color:white; border-radius:var(--radius-sm);
+    padding:10px 16px; font-size:13px; font-weight:600; margin-bottom:16px;
+    transition:transform 0.15s, box-shadow 0.15s;
+  " onmouseover="this.style.transform='scale(1.02)'" onmouseout="this.style.transform='scale(1)'">
+    ⬇ Download Full ${album.type}
+  </button>
+`;
 album.trackIds.forEach((id, idx) => {
 const song = SONGS.find(s => s.id === id);
 if (song) trackList.appendChild(buildTrackRow(song, idx + 1));
@@ -2631,9 +2638,241 @@ card.innerHTML = `
        <div class="album-card-sub">${esc(album.artist)} • ${album.year}</div>
        <span class="album-card-type">${esc(album.type)}</span>
      </div>
+     <div style="padding: 4px 12px 12px; display:flex; justify-content:flex-end; gap:6px;">
+  <button class="download-btn" onclick="event.stopPropagation(); downloadAlbum('${esc(album.id)}')" title="Download album">⬇ Download</button>
+  <button class="download-btn" onclick="event.stopPropagation(); copyAlbumLink('${esc(album.id)}')" title="Copy link">🔗</button>
+</div>
    `;
 grid.appendChild(card);
 });
+}
+     // ── Download with metadata ──────────────────────────────────────────
+async function downloadWithMeta(song) {
+  const toast = (msg) => {
+    const t = document.createElement('div');
+    t.textContent = msg;
+    t.style = `position:fixed;bottom:100px;right:20px;background:#8b5cf6;color:white;padding:10px 14px;border-radius:10px;z-index:9999;`;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 3000);
+  };
+
+  toast('⬇ Preparing download...');
+
+  try {
+    const [audioRes, coverRes] = await Promise.all([
+      fetch(song.download),
+      song.cover ? fetch(song.cover) : Promise.resolve(null)
+    ]);
+
+    const audioBuffer = await audioRes.arrayBuffer();
+    const coverBuffer = coverRes ? await coverRes.arrayBuffer() : null;
+
+    // Write ID3v2 tag manually
+    const frames = [];
+
+    // Helper: encode string frame
+    function makeTextFrame(id, text) {
+      const encoded = new TextEncoder().encode('\x00' + text); // \x00 = ISO-8859-1
+      const header = new Uint8Array(10);
+      const idBytes = new TextEncoder().encode(id);
+      header.set(idBytes, 0);
+      const size = encoded.length;
+      header[4] = (size >> 21) & 0x7f;
+      header[5] = (size >> 14) & 0x7f;
+      header[6] = (size >> 7)  & 0x7f;
+      header[7] = size & 0x7f;
+      return [...header, ...encoded];
+    }
+
+    frames.push(...makeTextFrame('TIT2', song.title));   // Title
+    frames.push(...makeTextFrame('TPE1', song.artist));  // Artist
+    frames.push(...makeTextFrame('TCON', song.genre));   // Genre
+
+    // Cover art frame (APIC)
+    if (coverBuffer) {
+      const mime = new TextEncoder().encode('image/jpeg\x00');
+      const picType = new Uint8Array([0x03]); // Front cover
+      const desc = new Uint8Array([0x00]);     // empty description
+      const encoding = new Uint8Array([0x00]); // ISO-8859-1
+      const coverData = new Uint8Array(coverBuffer);
+
+      const apicData = new Uint8Array(
+        encoding.length + mime.length + picType.length + desc.length + coverData.length
+      );
+      let offset = 0;
+      apicData.set(encoding, offset); offset += encoding.length;
+      apicData.set(mime, offset);     offset += mime.length;
+      apicData.set(picType, offset);  offset += picType.length;
+      apicData.set(desc, offset);     offset += desc.length;
+      apicData.set(coverData, offset);
+
+      const apicHeader = new Uint8Array(10);
+      const apicId = new TextEncoder().encode('APIC');
+      apicHeader.set(apicId, 0);
+      const sz = apicData.length;
+      apicHeader[4] = (sz >> 21) & 0x7f;
+      apicHeader[5] = (sz >> 14) & 0x7f;
+      apicHeader[6] = (sz >> 7)  & 0x7f;
+      apicHeader[7] = sz & 0x7f;
+
+      frames.push(...apicHeader, ...apicData);
+    }
+
+    // Build ID3 header
+    const framesArray = new Uint8Array(frames);
+    const id3Header = new Uint8Array(10);
+    id3Header[0] = 0x49; id3Header[1] = 0x44; id3Header[2] = 0x33; // "ID3"
+    id3Header[3] = 0x03; id3Header[4] = 0x00; // version 2.3.0
+    id3Header[5] = 0x00; // flags
+    const tagSize = framesArray.length;
+    id3Header[6] = (tagSize >> 21) & 0x7f;
+    id3Header[7] = (tagSize >> 14) & 0x7f;
+    id3Header[8] = (tagSize >> 7)  & 0x7f;
+    id3Header[9] = tagSize & 0x7f;
+
+    // Combine ID3 + audio
+    const finalBuffer = new Uint8Array(id3Header.length + framesArray.length + audioBuffer.byteLength);
+    finalBuffer.set(id3Header, 0);
+    finalBuffer.set(framesArray, id3Header.length);
+    finalBuffer.set(new Uint8Array(audioBuffer), id3Header.length + framesArray.length);
+
+    const blob = new Blob([finalBuffer], { type: 'audio/mpeg' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = `${song.artist} - ${song.title}.mp3`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('✅ Downloaded!');
+
+  } catch (e) {
+    console.error(e);
+    toast('❌ Download failed');
+  }
+}
+
+// ── Download full album/EP as zip ───────────────────────────────────
+async function downloadAlbum(albumId) {
+  const album = ALBUMS.find(a => a.id === albumId);
+  if (!album) return;
+
+  const toast = document.createElement('div');
+  toast.style = `position:fixed;bottom:100px;right:20px;background:#8b5cf6;color:white;padding:10px 14px;border-radius:10px;z-index:9999;min-width:180px;`;
+  toast.textContent = '⬇ Preparing album...';
+  document.body.appendChild(toast);
+
+  try {
+    // Dynamically load JSZip from CDN
+    if (!window.JSZip) {
+      await new Promise((res, rej) => {
+        const s = document.createElement('script');
+        s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+        s.onload = res; s.onerror = rej;
+        document.head.appendChild(s);
+      });
+    }
+
+    const zip = new JSZip();
+    const folder = zip.folder(album.title);
+    const songs = album.trackIds.map(id => SONGS.find(s => s.id === id)).filter(Boolean);
+
+    for (let i = 0; i < songs.length; i++) {
+      const song = songs[i];
+      toast.textContent = `⬇ ${i + 1}/${songs.length} – ${song.title}`;
+
+      const [audioRes, coverRes] = await Promise.all([
+        fetch(song.download),
+        song.cover ? fetch(song.cover) : Promise.resolve(null)
+      ]);
+
+      const audioBuffer = await audioRes.arrayBuffer();
+      const coverBuffer = coverRes ? await coverRes.arrayBuffer() : null;
+
+      // Build same ID3 tag as above
+      const frames = [];
+
+      function makeTextFrame(id, text) {
+        const encoded = new TextEncoder().encode('\x00' + text);
+        const header = new Uint8Array(10);
+        const idBytes = new TextEncoder().encode(id);
+        header.set(idBytes, 0);
+        const size = encoded.length;
+        header[4] = (size >> 21) & 0x7f;
+        header[5] = (size >> 14) & 0x7f;
+        header[6] = (size >> 7)  & 0x7f;
+        header[7] = size & 0x7f;
+        return [...header, ...encoded];
+      }
+
+      frames.push(...makeTextFrame('TIT2', song.title));
+      frames.push(...makeTextFrame('TPE1', song.artist));
+      frames.push(...makeTextFrame('TCON', song.genre));
+      frames.push(...makeTextFrame('TALB', album.title));
+      frames.push(...makeTextFrame('TRCK', String(i + 1)));
+
+      if (coverBuffer) {
+        const mime = new TextEncoder().encode('image/jpeg\x00');
+        const picType = new Uint8Array([0x03]);
+        const desc = new Uint8Array([0x00]);
+        const encoding = new Uint8Array([0x00]);
+        const coverData = new Uint8Array(coverBuffer);
+
+        const apicData = new Uint8Array(
+          encoding.length + mime.length + picType.length + desc.length + coverData.length
+        );
+        let off = 0;
+        apicData.set(encoding, off); off += encoding.length;
+        apicData.set(mime, off);     off += mime.length;
+        apicData.set(picType, off);  off += picType.length;
+        apicData.set(desc, off);     off += desc.length;
+        apicData.set(coverData, off);
+
+        const apicHeader = new Uint8Array(10);
+        const apicId = new TextEncoder().encode('APIC');
+        apicHeader.set(apicId, 0);
+        const sz = apicData.length;
+        apicHeader[4] = (sz >> 21) & 0x7f;
+        apicHeader[5] = (sz >> 14) & 0x7f;
+        apicHeader[6] = (sz >> 7)  & 0x7f;
+        apicHeader[7] = sz & 0x7f;
+
+        frames.push(...apicHeader, ...apicData);
+      }
+
+      const framesArray = new Uint8Array(frames);
+      const id3Header = new Uint8Array(10);
+      id3Header[0] = 0x49; id3Header[1] = 0x44; id3Header[2] = 0x33;
+      id3Header[3] = 0x03; id3Header[4] = 0x00; id3Header[5] = 0x00;
+      const tagSize = framesArray.length;
+      id3Header[6] = (tagSize >> 21) & 0x7f;
+      id3Header[7] = (tagSize >> 14) & 0x7f;
+      id3Header[8] = (tagSize >> 7)  & 0x7f;
+      id3Header[9] = tagSize & 0x7f;
+
+      const finalBuffer = new Uint8Array(id3Header.length + framesArray.length + audioBuffer.byteLength);
+      finalBuffer.set(id3Header, 0);
+      finalBuffer.set(framesArray, id3Header.length);
+      finalBuffer.set(new Uint8Array(audioBuffer), id3Header.length + framesArray.length);
+
+      folder.file(`${String(i + 1).padStart(2, '0')} - ${song.artist} - ${song.title}.mp3`, finalBuffer);
+    }
+
+    toast.textContent = '📦 Zipping...';
+    const blob = await zip.generateAsync({ type: 'blob' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url;
+    a.download = `${album.artist} - ${album.title} (${album.year}).zip`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast.textContent = '✅ Album downloaded!';
+
+  } catch (e) {
+    console.error(e);
+    toast.textContent = '❌ Download failed';
+  }
+
+  setTimeout(() => toast.remove(), 3000);
 }
 </script>
 </body>
