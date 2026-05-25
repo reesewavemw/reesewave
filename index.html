@@ -2555,35 +2555,37 @@ _openAlbumArtist = null;
 
 // ── Shared: build a clickable track row ─────────────────────────────
 function buildTrackRow(song, num) {
-const isPlaying = currentIndex >= 0 && SONGS[currentIndex].id === song.id;
-const row = document.createElement('div');
-row.className = 'track-row' + (isPlaying ? ' playing' : '');
+  const isPlaying = currentIndex >= 0 && SONGS[currentIndex].id === song.id;
+  const row = document.createElement('div');
+  row.className = 'track-row' + (isPlaying ? ' playing' : '');
 
-const coverHTML = song.cover
-? `<img class="track-cover" src="${esc(song.cover)}" alt="" />`
-: `<div class="track-cover" style="display:flex;align-items:center;justify-content:center;font-size:16px;">${GENRE_EMOJI[song.genre]||'🎵'}</div>`;
+  const coverHTML = song.cover
+    ? `<img class="track-cover" src="${esc(song.cover)}" alt="" />`
+    : `<div class="track-cover" style="display:flex;align-items:center;justify-content:center;font-size:16px;">${GENRE_EMOJI[song.genre]||'🎵'}</div>`;
 
-row.innerHTML = `
-   <div class="track-num">${isPlaying ? '▶' : num}</div>
-   ${coverHTML}
-   <div class="track-info">
-     <div class="track-title">${esc(song.title)}</div>
-     <div class="track-artist">${esc(song.artist)}</div>
-   </div>
-   <div class="track-plays">${formatPlays(getPlays(song.id, song.basePlays || 0))}</div>
- `;
+  row.innerHTML = `
+    <div class="track-num">${isPlaying ? '▶' : num}</div>
+    ${coverHTML}
+    <div class="track-info">
+      <div class="track-title">${esc(song.title)}</div>
+      <div class="track-artist">${esc(song.artist)}</div>
+    </div>
+    <div class="track-plays">${formatPlays(getPlays(song.id, song.basePlays || 0))}</div>
+    <button class="download-btn" style="margin-left:8px; flex-shrink:0;"
+      onclick="event.stopPropagation(); downloadWithMeta(SONGS.find(s=>s.id===${song.id}))"
+      title="Download track">⬇</button>
+  `;
 
-row.onclick = () => {
-// Find index in currentSongs (fall back to full SONGS)
-let idx = currentSongs.findIndex(s => s.id === song.id);
-if (idx === -1) {
-currentSongs = [...SONGS];
-idx = currentSongs.findIndex(s => s.id === song.id);
-}
-playFromGrid(idx);
-};
+  row.onclick = () => {
+    let idx = currentSongs.findIndex(s => s.id === song.id);
+    if (idx === -1) {
+      currentSongs = [...SONGS];
+      idx = currentSongs.findIndex(s => s.id === song.id);
+    }
+    playFromGrid(idx);
+  };
 
-return row;
+  return row;
 }
 // ── Home page artists strip ─────────────────────────────────────────
 function renderHomeArtists() {
@@ -2648,34 +2650,37 @@ grid.appendChild(card);
 }
      // ── Download with metadata ──────────────────────────────────────────
 async function downloadWithMeta(song) {
-  const toast = (msg) => {
+  if (!song) return;
+  const showToast = (msg, dur = 3000) => {
     const t = document.createElement('div');
     t.textContent = msg;
     t.style = `position:fixed;bottom:100px;right:20px;background:#8b5cf6;color:white;padding:10px 14px;border-radius:10px;z-index:9999;`;
     document.body.appendChild(t);
-    setTimeout(() => t.remove(), 3000);
+    setTimeout(() => t.remove(), dur);
+    return t;
   };
 
-  toast('⬇ Preparing download...');
+  const toast = showToast('⬇ Preparing download...', 10000);
 
   try {
-    const [audioRes, coverRes] = await Promise.all([
-      fetch(song.download),
-      song.cover ? fetch(song.cover) : Promise.resolve(null)
-    ]);
-
+    const audioRes = await fetch(song.download);
+    if (!audioRes.ok) throw new Error('Audio fetch failed: ' + audioRes.status);
     const audioBuffer = await audioRes.arrayBuffer();
-    const coverBuffer = coverRes ? await coverRes.arrayBuffer() : null;
 
-    // Write ID3v2 tag manually
+    let coverBuffer = null;
+    if (song.cover) {
+      try {
+        const coverRes = await fetch(song.cover);
+        if (coverRes.ok) coverBuffer = await coverRes.arrayBuffer();
+      } catch (e) { /* cover fetch failed, skip it */ }
+    }
+
     const frames = [];
 
-    // Helper: encode string frame
     function makeTextFrame(id, text) {
-      const encoded = new TextEncoder().encode('\x00' + text); // \x00 = ISO-8859-1
+      const encoded = new TextEncoder().encode('\x00' + text);
       const header = new Uint8Array(10);
-      const idBytes = new TextEncoder().encode(id);
-      header.set(idBytes, 0);
+      header.set(new TextEncoder().encode(id), 0);
       const size = encoded.length;
       header[4] = (size >> 21) & 0x7f;
       header[5] = (size >> 14) & 0x7f;
@@ -2684,70 +2689,74 @@ async function downloadWithMeta(song) {
       return [...header, ...encoded];
     }
 
-    frames.push(...makeTextFrame('TIT2', song.title));   // Title
-    frames.push(...makeTextFrame('TPE1', song.artist));  // Artist
-    frames.push(...makeTextFrame('TCON', song.genre));   // Genre
+    frames.push(...makeTextFrame('TIT2', song.title));
+    frames.push(...makeTextFrame('TPE1', song.artist));
+    frames.push(...makeTextFrame('TCON', song.genre));
 
-    // Cover art frame (APIC)
     if (coverBuffer) {
-      const mime = new TextEncoder().encode('image/jpeg\x00');
-      const picType = new Uint8Array([0x03]); // Front cover
-      const desc = new Uint8Array([0x00]);     // empty description
-      const encoding = new Uint8Array([0x00]); // ISO-8859-1
-      const coverData = new Uint8Array(coverBuffer);
-
-      const apicData = new Uint8Array(
+      const mime       = new TextEncoder().encode('image/jpeg\x00');
+      const encoding   = new Uint8Array([0x00]);
+      const picType    = new Uint8Array([0x03]);
+      const desc       = new Uint8Array([0x00]);
+      const coverData  = new Uint8Array(coverBuffer);
+      const apicData   = new Uint8Array(
         encoding.length + mime.length + picType.length + desc.length + coverData.length
       );
-      let offset = 0;
-      apicData.set(encoding, offset); offset += encoding.length;
-      apicData.set(mime, offset);     offset += mime.length;
-      apicData.set(picType, offset);  offset += picType.length;
-      apicData.set(desc, offset);     offset += desc.length;
-      apicData.set(coverData, offset);
+      let off = 0;
+      apicData.set(encoding, off); off += encoding.length;
+      apicData.set(mime, off);     off += mime.length;
+      apicData.set(picType, off);  off += picType.length;
+      apicData.set(desc, off);     off += desc.length;
+      apicData.set(coverData, off);
 
       const apicHeader = new Uint8Array(10);
-      const apicId = new TextEncoder().encode('APIC');
-      apicHeader.set(apicId, 0);
+      apicHeader.set(new TextEncoder().encode('APIC'), 0);
       const sz = apicData.length;
       apicHeader[4] = (sz >> 21) & 0x7f;
       apicHeader[5] = (sz >> 14) & 0x7f;
       apicHeader[6] = (sz >> 7)  & 0x7f;
       apicHeader[7] = sz & 0x7f;
-
       frames.push(...apicHeader, ...apicData);
     }
 
-    // Build ID3 header
-    const framesArray = new Uint8Array(frames);
-    const id3Header = new Uint8Array(10);
-    id3Header[0] = 0x49; id3Header[1] = 0x44; id3Header[2] = 0x33; // "ID3"
-    id3Header[3] = 0x03; id3Header[4] = 0x00; // version 2.3.0
-    id3Header[5] = 0x00; // flags
+    const framesArray  = new Uint8Array(frames);
+    const id3Header    = new Uint8Array(10);
+    id3Header[0] = 0x49; id3Header[1] = 0x44; id3Header[2] = 0x33;
+    id3Header[3] = 0x03; id3Header[4] = 0x00; id3Header[5] = 0x00;
     const tagSize = framesArray.length;
     id3Header[6] = (tagSize >> 21) & 0x7f;
     id3Header[7] = (tagSize >> 14) & 0x7f;
     id3Header[8] = (tagSize >> 7)  & 0x7f;
     id3Header[9] = tagSize & 0x7f;
 
-    // Combine ID3 + audio
-    const finalBuffer = new Uint8Array(id3Header.length + framesArray.length + audioBuffer.byteLength);
-    finalBuffer.set(id3Header, 0);
-    finalBuffer.set(framesArray, id3Header.length);
-    finalBuffer.set(new Uint8Array(audioBuffer), id3Header.length + framesArray.length);
+    const final = new Uint8Array(id3Header.length + framesArray.length + audioBuffer.byteLength);
+    final.set(id3Header, 0);
+    final.set(framesArray, id3Header.length);
+    final.set(new Uint8Array(audioBuffer), id3Header.length + framesArray.length);
 
-    const blob = new Blob([finalBuffer], { type: 'audio/mpeg' });
+    const blob = new Blob([final], { type: 'audio/mpeg' });
     const url  = URL.createObjectURL(blob);
     const a    = document.createElement('a');
-    a.href = url;
-    a.download = `${song.artist} - ${song.title}.mp3`;
+    a.href = url; a.download = `${song.artist} - ${song.title}.mp3`;
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    toast('✅ Downloaded!');
+
+    toast.remove();
+    showToast('✅ Downloaded!');
 
   } catch (e) {
-    console.error(e);
-    toast('❌ Download failed');
+    console.error('downloadWithMeta error:', e);
+    toast.remove();
+    // Fallback: plain download link (no ID3 tags, but works on any server)
+    showToast('⚠️ Trying basic download...');
+    const a = document.createElement('a');
+    a.href = song.download;
+    a.download = `${song.artist} - ${song.title}.mp3`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
   }
 }
 
