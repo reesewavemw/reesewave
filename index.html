@@ -1481,11 +1481,11 @@ Albums & EPs
    position:relative;
  ">
 <button onclick="closeAlbumModal({target: document.getElementById('album-modal-overlay')})" style="
-     position:absolute; top:14px; right:14px;
-     width:30px; height:30px; background:var(--bg-elevated);
-     border-radius:50%; font-size:15px; color:var(--text-secondary);
-     display:flex; align-items:center; justify-content:center;
-   ">✕</button>
+    position:absolute; top:14px; right:14px;
+    width:30px; height:30px; background:var(--bg-elevated);
+    border-radius:50%; font-size:15px; color:var(--text-secondary);
+    display:flex; align-items:center; justify-content:center;
+  ">✕</button>
 
 <div style="display:flex; gap:18px; margin-bottom:20px; align-items:flex-end;">
 <img id="album-modal-cover" src="" alt="" style="
@@ -2548,13 +2548,16 @@ document.getElementById('album-modal-overlay').style.display = 'flex';
 }
 
 function closeAlbumModal(e) {
-if (e && e.target !== document.getElementById('album-modal-overlay')) return;
-document.getElementById('album-modal-overlay').style.display = 'none';
-if (_openAlbumArtist) {
-showPage('albums');
-setActiveNav(document.querySelectorAll('.nav-item')[4]);
-_openAlbumArtist = null;
-}
+  if (e && e.target !== document.getElementById('album-modal-overlay')) return;
+  document.getElementById('album-modal-overlay').style.display = 'none';
+
+  if (_openAlbumArtist) {
+    const artistName = _openAlbumArtist;
+    _openAlbumArtist = null;
+    showPage('artists');
+    setActiveNav(document.querySelectorAll('.nav-item')[3]);
+    setTimeout(() => openArtistProfile(artistName), 50);
+  }
 }
 
 // ── Shared: build a clickable track row ─────────────────────────────
